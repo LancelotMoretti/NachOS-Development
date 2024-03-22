@@ -2,6 +2,10 @@
 
 ## Folder content
 
+- c++ example: All members
+    - 6 file .cc
+    - 5 file .h
+
 - bin: ĐVH
     - 9 file .c (included main.c)
     - 5 files .h
@@ -40,13 +44,13 @@
 > **_NOTE:_** About main.cc and main.c, all members are involved in researching
 
 ### Đào Việt Hoàng
-- [ ] Research folder bin and network
+- [ ] Research folder bin, network and c++ example
 
 ### Bùi Tá Phát
-- [ ] Research folder filesys and test
+- [ ] Research folder filesys, test and c++ example
 
 ### Đặng Thanh Tú
-- [ ] Research folder machine and userprog
+- [ ] Research folder machine, userprog and c++ example
 
 ### Đào Ngọc Thiện
-- [ ] Research folder threads and userprog
+- [ ] Research folder threads, userprog and c++ example
