@@ -23,7 +23,7 @@
     - 1 files .h
 
 - test: BTP
-    - 5 files .c
+    - 5 files .c (included shell.c)
     - 1 files .s
 
 - threads: ĐNT
@@ -35,13 +35,15 @@
     - 4 files .cc
     - 3 files .h
 
+- Libraries link graph: [NachOS Linked](../NachOS-Development/Link.png)
+
 # To-do list
 
 ## State 1 (21/03/2024 - 24/03/2024)
 
 > **_NOTE:_** All members will research on the use and functionality of Nachos operating system
 
-> **_NOTE:_** About main.cc and main.c, all members are involved in researching
+> **_NOTE:_** About main.cc, main.c and shell.c, all members are involved in researching
 
 ### Đào Việt Hoàng
 - [ ] Research folder bin, network and c++ example
