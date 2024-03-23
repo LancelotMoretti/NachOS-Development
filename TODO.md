@@ -1,4 +1,12 @@
-# RESEARCH ON THE USE AND FUNCTIONALITY OF NACHOS OPERATING SYSTEM
+# To-do list
+
+## RESEARCH ON THE USE AND FUNCTIONALITY OF NACHOS OPERATING SYSTEM
+
+> **_NOTE:_** All members will research on the use and functionality of Nachos operating system
+
+> **_NOTE:_** About main.cc, main.c and shell.c, all members are involved in researching
+
+> **_NOTE:_** If needed, member can research other folder, so before researching, please check the [result file](Research_Results.md) to avoid duplicate research
 
 ## Folder content
 
@@ -37,13 +45,7 @@
 
 - Libraries link graph: [NachOS Linked](../NachOS-Development/Link.png)
 
-# To-do list
-
 ## State 1 (21/03/2024 - 24/03/2024)
-
-> **_NOTE:_** All members will research on the use and functionality of Nachos operating system
-
-> **_NOTE:_** About main.cc, main.c and shell.c, all members are involved in researching
 
 ### Đào Việt Hoàng
 - [ ] Research folder bin, network and c++ example
