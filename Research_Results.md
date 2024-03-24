@@ -19,3 +19,21 @@
 > **_NOTE:_** Remember to check where the inHandler is set to TRUE
 
 > **_NOTE:_** Remember to further research the Timer constructor called in Initialize function since somehow the inHandler isn't appear in it which is really strange
+
+# Folder 'test'
+
+1. This folder contain programs that can run on NachOS and the implementation of system call in NachOS
+
+2. Command ***"./nachos -rs 1234 -x ../test/halt"*** will run the program in halt.c (or we can remove the ***"-rs 1234"*** to run the program without random seed) (i don't know what is the random seed for since it doesn't affect the program like time(NULL) in C++)
+
+3. If we don't run the program with ***"-x"***, the program will run the same as the research in folder 'threads' above (which mean NachOS will go to IdleMode and Sleep then Halt the machine)
+
+> **_NOTE:_** Remember to test all the program in this folder
+
+# Folder 'filesys'
+
+1. This folder contain the implementation of file system in NachOS
+
+2. The library in this folder is used to simulate the file system in NachOS
+
+> **_NOTE:_** Remember to check the implementation and usage of file system in NachOS

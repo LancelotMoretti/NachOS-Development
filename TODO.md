@@ -51,7 +51,7 @@
 - [ ] Research folder bin, network and c++ example
 
 ### Bùi Tá Phát
-- [ ] Research folder filesys, test and c++ example
+- [ ] Research folder threads, filesys, test and c++ example
 
 ### Đặng Thanh Tú
 - [ ] Research folder machine, userprog and c++ example
