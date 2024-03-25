@@ -10,36 +10,36 @@
 
 ## Folder content
 
-- c++ example: All members
+- c++ example:
     - 6 file .cc
     - 5 file .h
 
-- bin: ĐVH
+- bin:
     - 9 file .c (included main.c)
     - 5 files .h
 
-- filesys: BTP
+- filesys:
     - 6 files .cc
     - 5 files .h
 
-- machine: ĐTT
+- machine:
     - 10 files .cc
     - 10 files .h
 
-- network: ĐVH
+- network:
     - 2 files .cc
     - 1 files .h
 
-- test: BTP
+- test:
     - 5 files .c (included shell.c)
     - 1 files .s
 
-- threads: ĐNT
+- threads:
     - 9 files .cc (included main.cc)
     - 11 files .h
     - 1 files .c
 
-- userprog: ĐTT & ĐNT
+- userprog:
     - 4 files .cc
     - 3 files .h
 
