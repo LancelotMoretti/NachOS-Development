@@ -31,7 +31,7 @@
     - 1 files .h
 
 - test:
-    - 5 files .c (included shell.c)
+    - 5 files .c
     - 1 files .s
 
 - threads:
