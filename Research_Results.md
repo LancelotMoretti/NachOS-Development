@@ -28,7 +28,9 @@
 
 3. If we don't run the program with ***"-x"***, the program will run the same as the research in folder 'threads' above (which mean NachOS will go to IdleMode and Sleep then Halt the machine)
 
-> **_NOTE:_** Remember to test all the program in this folder
+4. Test all and only halt.c (../test/halt) can run normally, other programs will cause the ASSERT to abort the program. The reason maybe because the other programs use system call that haven't been implemented yet
+
+> **_NOTE:_** Remember to check the implementation of system call in NachOS
 
 # Folder 'filesys'
 
