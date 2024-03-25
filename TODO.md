@@ -48,13 +48,57 @@
 ## State 1 (21/03/2024 - 24/03/2024)
 
 ### Đào Việt Hoàng
-- [ ] Research folder bin, network and c++ example
+- [ ] Research folder bin
+- [ ] Research folder network
+- [ ] Research folder c++ example
 
 ### Bùi Tá Phát
-- [ ] Research folder threads, filesys, test and c++ example
+- [ ] Research folder threads
+- [x] Research folder filesys
+- [x] Research folder test
+- [ ] Research folder c++ example
 
 ### Đặng Thanh Tú
-- [ ] Research folder machine, userprog and c++ example
+- [ ] Research folder machine
+- [ ] Research folder userprog
+- [ ] Research folder c++ example
 
 ### Đào Ngọc Thiện
-- [ ] Research folder threads, userprog and c++ example
+- [ ] Research folder threads
+- [ ] Research folder userprog
+- [ ] Research folder c++ example
+
+## State 2 (25/03/2024 - 29/03/2024)
+
+### Đào Việt Hoàng
+- [ ] Research folder bin
+- [ ] Research folder network
+- [ ] Research folder threads
+- [ ] Research folder filesys
+- [ ] Research folder test
+- [ ] Research folder c++ example
+
+### Bùi Tá Phát
+- [ ] System call ReadInt
+- [ ] System call PrintInt
+- [ ] System call ReadFloat
+- [ ] System call PrintFloat
+- [ ] System call CreateFile
+- [ ] System call OpenFile
+- [ ] System call CloseFile
+
+### Đặng Thanh Tú
+- [ ] Research folder machine
+- [ ] Research folder userprog
+- [ ] Research folder threads
+- [ ] Research folder filesys
+- [ ] Research folder test
+- [ ] Research folder c++ example
+
+### Đào Ngọc Thiện
+- [ ] System call ReadChar
+- [ ] System call PrintChar
+- [ ] System call ReadString
+- [ ] System call PrintString
+- [ ] System call ReadFile
+- [ ] System call WriteFile
