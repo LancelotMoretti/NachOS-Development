@@ -18,17 +18,25 @@
 /* system call codes -- used by the stubs to tell the kernel which system call
  * is being asked for
  */
-#define SC_Halt		0
-#define SC_Exit		1
-#define SC_Exec		2
-#define SC_Join		3
-#define SC_Create	4
-#define SC_Open		5
-#define SC_Read		6
-#define SC_Write	7
-#define SC_Close	8
-#define SC_Fork		9
-#define SC_Yield	10
+#define SC_Halt		    0
+#define SC_Exit		    1
+#define SC_Exec		    2
+#define SC_Join		    3
+#define SC_Create	    4
+#define SC_Open		    5
+#define SC_Read		    6
+#define SC_Write	    7
+#define SC_Close	    8
+#define SC_Fork		    9
+#define SC_Yield	    10
+#define SC_ReadInt	    11
+#define SC_PrintInt     12
+#define SC_ReadFloat	13
+#define SC_PrintFloat	14
+#define SC_ReadChar 	15
+#define SC_PrintChar	16
+#define SC_ReadString   17
+#define SC_PrintString  18
 
 #ifndef IN_ASM
 
@@ -87,7 +95,7 @@ typedef int OpenFileId;
 #define ConsoleOutput	1  
  
 /* Create a Nachos file, with "name" */
-void Create(char *name);
+int Create(char *name);
 
 /* Open the Nachos file "name", and return an "OpenFileId" that can 
  * be used to read and write to the file.
@@ -108,7 +116,29 @@ int Read(char *buffer, int size, OpenFileId id);
 /* Close the file, we're done reading and writing to it. */
 void Close(OpenFileId id);
 
+/* Read an integer from the input console */
+int ReadInt();
 
+/* Print an integer to the output console */
+void PrintInt(int number);
+
+/* Read a float from the input console */
+float ReadFloat();
+
+/* Print a float to the output console */
+void PrintFloat(float number);
+
+/* Read a character from the input console */
+char ReadChar();
+
+/* Print a character to the output console */
+void PrintChar(char character);
+
+/* Read a string from the input console */
+void ReadString();
+
+/* Print a string to the output console */
+void PrintString(char *buffer);
 
 /* User-level thread operations: Fork and Yield.  To allow multiple
  * threads to run within a user program. 

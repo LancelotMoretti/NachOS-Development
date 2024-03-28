@@ -79,11 +79,11 @@
 - [ ] Research folder c++ example
 
 ### Bùi Tá Phát
-- [ ] System call ReadInt
-- [ ] System call PrintInt
-- [ ] System call ReadFloat
-- [ ] System call PrintFloat
-- [ ] System call CreateFile
+- [x] System call ReadInt
+- [x] System call PrintInt
+- [x] System call ReadFloat
+- [x] System call PrintFloat
+- [x] System call CreateFile
 - [ ] System call OpenFile
 - [ ] System call CloseFile
 
