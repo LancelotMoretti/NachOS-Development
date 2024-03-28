@@ -89,7 +89,7 @@ int System2User(int virtAddr, int len, char* buffer)
 //	are in machine.h.
 //----------------------------------------------------------------------
 
-static SynchConsole *synchConsole;
+static SynchConsole *gSynchConsole;
 
 void
 ExceptionHandler(ExceptionType which)
@@ -97,7 +97,7 @@ ExceptionHandler(ExceptionType which)
     int type = machine->ReadRegister(2);
     char *input = new char[MaxString + 1];
     char *output = new char[MaxString + 1];
-    synchConsole = new SynchConsole(input, output);
+    gSynchConsole = new SynchConsole(input, output);
 
     switch(which)
     {
@@ -155,7 +155,7 @@ ExceptionHandler(ExceptionType which)
                     int number = 0;
                     short multiplier = 1;
                     // Đọc tối đa 11 kí tự
-                    int numOfChars = synchConsole->Read(buffer, 11);
+                    int numOfChars = gSynchConsole->Read(buffer, 11);
 
                     // Nếu có kí tự đọc được
                     if (numOfChars > 0) {
@@ -221,7 +221,7 @@ ExceptionHandler(ExceptionType which)
                     if (isNeg) buffer[printPos--] = '-';
 
                     // In chuỗi ra màn hình bắt đầu từ vị trí đọc
-                    synchConsole->Write(buffer + printPos, 12 - printPos);
+                    gSynchConsole->Write(buffer + printPos, 12 - printPos);
 
                     delete buffer;
                     break;
@@ -236,7 +236,7 @@ ExceptionHandler(ExceptionType which)
                     float number = 0;
 
                     // Đọc tối đa 40 kí tự
-                    int numOfChars = synchConsole->Read(buffer, 40);
+                    int numOfChars = gSynchConsole->Read(buffer, 40);
                     
                     // Nếu có kí tự đọc được
                     if (numOfChars > 0) {
@@ -346,7 +346,7 @@ ExceptionHandler(ExceptionType which)
                     }
 
                     // In chuỗi ra màn hình bắt đầu từ vị trí đọc
-                    synchConsole->Write(buffer + printPos, endPos - printPos);
+                    gSynchConsole->Write(buffer + printPos, endPos - printPos);
 
                     delete buffer;
                     break;
@@ -396,5 +396,5 @@ ExceptionHandler(ExceptionType which)
 
     delete input;
     delete output;
-    delete synchConsole;
+    delete gSynchConsole;
 }
