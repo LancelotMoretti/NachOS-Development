@@ -130,6 +130,22 @@ PrintInt:
 	j	$31
 	.end PrintInt
 
+	.globl ReadFloat
+	.ent	ReadFloat
+ReadFloat:
+	addiu $2,$0,SC_ReadFloat
+	syscall
+	j	$31
+	.end ReadFloat
+
+	.globl PrintFloat
+	.ent	PrintFloat
+PrintFloat:
+	addiu $2,$0,SC_PrintFloat
+	syscall
+	j	$31
+	.end PrintFloat
+
 	.globl ReadChar
 	.ent	ReadChar
 ReadChar:

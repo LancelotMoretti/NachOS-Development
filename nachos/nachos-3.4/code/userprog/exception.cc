@@ -169,7 +169,7 @@ ExceptionHandler(ExceptionType which)
                         return;
                     }
                     DEBUG('a', "\n Finish reading filename.");
-                    //DEBUG(‘a’,"\n File name : '"<<filename<<"'");
+                    // DEBUG('a', "\n File name : '" << filename <<"'");
                     // Mở file
                     // Dùng đối tượng fileSystem của lớp OpenFile để mở file,
                     // việc mở file này là sử dụng các thủ tục mở file của hệ điều
@@ -190,14 +190,22 @@ ExceptionHandler(ExceptionType which)
                 }
                 case SC_Close:
                 {
+                    DEBUG('a', "\n SC_Close call ...");
+                    DEBUG('a', "\n Reading file id");
+                    // Lấy tham số id của file từ thanh ghi r4
                     int fid = machine->ReadRegister(4);
+                    // Đóng file
+                    DEBUG('a', "\n Point to file with id %d", fid);
+                    // Dùng con trỏ của lớp OpenFile để trỏ đến file cần đóng
                     OpenFile* file = new OpenFile(fid);
                     if (file == NULL) {
                         printf("\n Error close file with id %d", fid);
                         machine->WriteRegister(2, -1);
                         return;
                     }
+                    DEBUG('a', "\n Closing file with id %d", fid);
                     delete file;
+                    // Trả về 0 nếu đóng file thành công
                     machine->WriteRegister(2, 0);
                     break;
                 }
@@ -206,6 +214,8 @@ ExceptionHandler(ExceptionType which)
                     char *buffer = new char[12];
                     int number = 0;
                     short multiplier = 1;
+                    DEBUG('a', "\n SC_ReadInt call ...");
+                    DEBUG('a', "\n Synching number from console ...");
                     // Đọc tối đa 11 kí tự
                     int numOfChars = gSynchConsole->Read(buffer, 11);
 
@@ -226,6 +236,7 @@ ExceptionHandler(ExceptionType which)
                             if (buffer[i] < 48 || buffer[i] > 57) {
                                 number = 0;
                                 printf("\n Invalid number");
+                                DEBUG('a', "\n Invalid number");
                                 break;
                             }
                             else {
@@ -240,6 +251,7 @@ ExceptionHandler(ExceptionType which)
                     else {
                         // Ghi 0 vào thanh ghi r2
                         printf("\n No number read!");
+                        DEBUG('a', "\n No number read!");
                         machine->WriteRegister(2, 0);
                     }
 
@@ -251,6 +263,8 @@ ExceptionHandler(ExceptionType which)
                     char* buffer = new char[12];
                     int printPos = 11;
                     bool isNeg = false;
+                    DEBUG('a', "\n SC_PrintInt call ...");
+                    DEBUG('a', "\n Reading number");
                     // Đọc số nguyên từ thanh ghi r4
                     int number = machine->ReadRegister(4);
                     if (number < 0) {
@@ -287,7 +301,9 @@ ExceptionHandler(ExceptionType which)
                     int maxDecimalPart = 7;
                     short multiplier = 1;
                     float number = 0;
+                    DEBUG('a', "\n SC_ReadFloat call ...");
 
+                    DEBUG('a', "\n Synching number from console ...");
                     // Đọc tối đa 40 kí tự
                     int numOfChars = gSynchConsole->Read(buffer, 40);
                     
@@ -318,6 +334,7 @@ ExceptionHandler(ExceptionType which)
                             if (buffer[i] < 48 || buffer[i] > 57) {
                                 number = 0;
                                 printf("\n Invalid number");
+                                DEBUG('a', "\n Invalid number");
                                 break;
                             }
                             else {
@@ -343,6 +360,7 @@ ExceptionHandler(ExceptionType which)
                     else {
                         // Ghi 0 vào thanh ghi r2
                         printf("\n No number read!");
+                        DEBUG('a', "\n No number read!");
                         machine->WriteRegister(2, 0);
                     }
 
