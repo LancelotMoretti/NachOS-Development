@@ -84,8 +84,8 @@
 - [x] System call ReadFloat
 - [x] System call PrintFloat
 - [x] System call CreateFile
-- [ ] System call OpenFile
-- [ ] System call CloseFile
+- [x] System call OpenFile
+- [x] System call CloseFile
 
 ### Đặng Thanh Tú
 - [ ] Research folder machine

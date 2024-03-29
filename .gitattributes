@@ -1,1 +1,1 @@
-* text eol=lf
+git core.autocrlf=false
