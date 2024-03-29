@@ -192,6 +192,7 @@ ExceptionHandler(ExceptionType which)
                     }
 
                     delete buffer;
+                    break;
                 }
                 case SC_PrintInt:
                 {
@@ -294,6 +295,7 @@ ExceptionHandler(ExceptionType which)
                     }
 
                     delete buffer;
+                    break;
                 }
                 case SC_PrintFloat:
                 {
@@ -351,6 +353,38 @@ ExceptionHandler(ExceptionType which)
                     delete buffer;
                     break;
                 }
+                case SC_ReadChar:
+                {
+                    char buffer;
+                    int temp = gSynchConsole->Read(&buffer, 1); // Đọc 1 kí tự do người dùng nhập
+
+                    machine->WriteRegister(2, buffer);
+                    break;
+                }
+                case SC_PrintChar:
+                {
+                    char c = (ch)machine->ReadRegister(4); // Lấy kí tự vào biến c
+                    gSynchConsole->Write(&ch, 1);
+                    break;
+                }
+                case SC_ReadString:
+                {
+                    char *buffer;
+                    break;
+                }
+                case SC_PrintString:
+                {
+                    char *buffer;
+                    int addr = machine->ReadRegister(4);
+                    buffer = User2System(addr, MaxString); // chuyển dữ liệu từ User space sang Kernel space
+                    int index = 0;
+                    while (buffer[index] != '\n' && index < MaxString) {
+                        gSynchConsole->Write(buffer + index++, 1); // In một kí tự ở vị trí thứ i trong chuỗi
+                    }
+
+                    delete buffer;
+                    break;
+                }
                 default:
                     printf("\n Unexpected user mode exception (%d %d) \n", which, type);
                     interrupt->Halt();
@@ -385,6 +419,11 @@ ExceptionHandler(ExceptionType which)
 
         case IllegalInstrException:
             printf("\n IllegalInstrException");
+            interrupt->Halt();
+            break;
+
+        case NumExceptionTypes:
+            printf("\n NumExceptionTypes");
             interrupt->Halt();
             break;
 

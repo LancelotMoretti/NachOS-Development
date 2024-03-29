@@ -135,7 +135,7 @@ char ReadChar();
 void PrintChar(char character);
 
 /* Read a string from the input console */
-void ReadString();
+void ReadString(char *buffer, int length);
 
 /* Print a string to the output console */
 void PrintString(char *buffer);
