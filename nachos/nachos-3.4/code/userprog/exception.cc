@@ -149,6 +149,58 @@ ExceptionHandler(ExceptionType which)
                     delete filename;
                     break;
                 }
+                case SC_Open:
+                {
+                    int virtAddr;
+                    char* filename;
+                    DEBUG('a', "\n SC_Open call ...");
+                    DEBUG('a', "\n Reading virtual address of filename");
+                    // Lấy tham số tên tập tin từ thanh ghi r4
+                    virtAddr = machine->ReadRegister(4);
+                    DEBUG ('a', "\n Reading filename.");
+                    // MaxFileLength là = 32
+                    filename = User2System(virtAddr, MaxFileLength + 1);
+                    if (filename == NULL) {
+                        printf("\n Not enough memory in system");
+                        DEBUG('a', "\n Not enough memory in system");
+                        machine->WriteRegister(2,-1); // trả về lỗi cho chương
+                        // trình người dùng
+                        delete filename;
+                        return;
+                    }
+                    DEBUG('a', "\n Finish reading filename.");
+                    //DEBUG(‘a’,"\n File name : '"<<filename<<"'");
+                    // Mở file
+                    // Dùng đối tượng fileSystem của lớp OpenFile để mở file,
+                    // việc mở file này là sử dụng các thủ tục mở file của hệ điều
+                    // hành Linux, chúng ta không quản ly trực tiếp các block trên
+                    // đĩa cứng cấp phát cho file, việc quản ly các block của file
+                    // trên ổ đĩa là một đồ án khác
+                    OpenFile* file = fileSystem->Open(filename);
+                    if (file == NULL) {
+                        printf("\n Error open file '%s'", filename);
+                        machine->WriteRegister(2, -1);
+                        delete filename;
+                        return;
+                    }
+                    // Trả về id của file
+                    machine->WriteRegister(2, file->GetID());
+                    delete filename;
+                    break;
+                }
+                case SC_Close:
+                {
+                    int fid = machine->ReadRegister(4);
+                    OpenFile* file = new OpenFile(fid);
+                    if (file == NULL) {
+                        printf("\n Error close file with id %d", fid);
+                        machine->WriteRegister(2, -1);
+                        return;
+                    }
+                    delete file;
+                    machine->WriteRegister(2, 0);
+                    break;
+                }
                 case SC_ReadInt:
                 {
                     char *buffer = new char[12];
@@ -363,8 +415,8 @@ ExceptionHandler(ExceptionType which)
                 }
                 case SC_PrintChar:
                 {
-                    char c = (ch)machine->ReadRegister(4); // Lấy kí tự vào biến c
-                    gSynchConsole->Write(&ch, 1);
+                    char c = (char)machine->ReadRegister(4); // Lấy kí tự vào biến c
+                    gSynchConsole->Write(&c, 1);
                     break;
                 }
                 case SC_ReadString:
