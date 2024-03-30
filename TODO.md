@@ -102,3 +102,31 @@
 - [ ] System call PrintString
 - [ ] System call ReadFile
 - [ ] System call WriteFile
+
+## State 3 (30/03/2024 - 03/04/2024)
+
+### Đào Việt Hoàng
+- Conclude the role of functions in:
+    - [ ] progtest.cc
+    - [ ] syscall.h
+    - [ ] exception.cc
+    - [ ] bitmap.cc and bitmap.h
+    - [ ] openfile.h
+    - [ ] translate.cc and translate.h
+    - [ ] machine.h and machine.cc
+    - [ ] mipssim.cc
+    - [ ] console.h and console.cc
+    - [ ] synchcons.h and synchcons.cc
+
+### Bùi Tá Phát
+- [ ] Further analyze the role of the functions
+- [ ] quicksort.c
+- [ ] mergesort.c
+
+### Đặng Thanh Tú
+- [ ] Conclude the role of functions in folder test
+
+### Đào Ngọc Thiện
+- [ ] Further analyze the role of the functions
+- [ ] help.c
+- [ ] ascii.c
