@@ -106,7 +106,7 @@
 ## State 3 (30/03/2024 - 03/04/2024)
 
 ### Đào Việt Hoàng
-- Conclude the role of functions in:
+- [ ] Conclude the role of functions in:
     - [ ] progtest.cc
     - [ ] syscall.h
     - [ ] exception.cc
@@ -124,7 +124,14 @@
 - [ ] mergesort.c
 
 ### Đặng Thanh Tú
-- [ ] Conclude the role of functions in folder test
+- [ ] Conclude the role of functions in folder test:
+    - [ ] sort.c
+    - [ ] matmult.c
+    - [ ] start.c
+    - [ ] start.s
+    - [ ] shell.c
+    - [ ] halt.c
+    - [ ] createfile.c
 
 ### Đào Ngọc Thiện
 - [ ] Further analyze the role of the functions
