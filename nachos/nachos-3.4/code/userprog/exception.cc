@@ -23,15 +23,15 @@
 
 #include "copyright.h"
 #include "system.h"
+#include "machine.h"
 #include "syscall.h"
-#include "synchconsole.h"
+#include "synchcons.h"
 
 #define MaxFileLength 32 // Chiều dài tên file tối đa
 #define MaxString 256 // Chiều dài chuỗi tối đa
 
 // System call: copy string from User memory to System memory
-char* User2System(int virtAddr, int limit)
-{
+char* User2System(int virtAddr, int limit) {
     int i; // index
     int oneChar;
     char* kernelBuf = NULL;
@@ -51,8 +51,7 @@ char* User2System(int virtAddr, int limit)
 }
 
 // System call: copy string from System memory to User memory
-int System2User(int virtAddr, int len, char* buffer)
-{
+int System2User(int virtAddr, int len, char* buffer) {
     if (len < 0) return -1;
     if (len == 0) return len;
     int i = 0;
@@ -64,6 +63,17 @@ int System2User(int virtAddr, int len, char* buffer)
         i++;
     } while (i < len && oneChar != 0);
     return i;
+}
+
+void IncPCReg() {
+    // Compute next pc, but don't install in case there's an error or branch.
+    int pcAfter = registers[NextPCReg] + 4;
+
+    // Advance program counters.
+    registers[PrevPCReg] = registers[PCReg];	// for debugging, in case we
+						// are jumping into lala-land
+    registers[PCReg] = registers[NextPCReg];
+    registers[NextPCReg] = pcAfter;
 }
 
 //----------------------------------------------------------------------
@@ -127,8 +137,8 @@ ExceptionHandler(ExceptionType which)
                         DEBUG('a', "\n Not enough memory in system");
                         machine->WriteRegister(2,-1); // trả về lỗi cho chương
                         // trình người dùng
-                        delete filename;
-                        return;
+                        delete[] filename;
+                        break;
                     }
                     DEBUG('a', "\n Finish reading filename.");
                     //DEBUG(‘a’,"\n File name : '"<<filename<<"'");
@@ -141,12 +151,12 @@ ExceptionHandler(ExceptionType which)
                     if (!fileSystem->Create(filename, 0)) {
                         printf("\n Error create file '%s'", filename);
                         machine->WriteRegister(2, -1);
-                        delete filename;
-                        return;
+                        delete[] filename;
+                        break;
                     }
                     machine->WriteRegister(2, 0); // trả về cho chương trình
                     // người dùng thành công
-                    delete filename;
+                    delete[] filename;
                     break;
                 }
                 case SC_Open:
@@ -165,8 +175,8 @@ ExceptionHandler(ExceptionType which)
                         DEBUG('a', "\n Not enough memory in system");
                         machine->WriteRegister(2,-1); // trả về lỗi cho chương
                         // trình người dùng
-                        delete filename;
-                        return;
+                        delete[] filename;
+                        break;
                     }
                     DEBUG('a', "\n Finish reading filename.");
                     // DEBUG('a', "\n File name : '" << filename <<"'");
@@ -180,12 +190,13 @@ ExceptionHandler(ExceptionType which)
                     if (file == NULL) {
                         printf("\n Error open file '%s'", filename);
                         machine->WriteRegister(2, -1);
-                        delete filename;
-                        return;
+                        delete[] filename;
+                        break;
                     }
                     // Trả về id của file
                     machine->WriteRegister(2, file->GetID());
-                    delete filename;
+                    delete file;
+                    delete[] filename;
                     break;
                 }
                 case SC_Close:
@@ -201,12 +212,71 @@ ExceptionHandler(ExceptionType which)
                     if (file == NULL) {
                         printf("\n Error close file with id %d", fid);
                         machine->WriteRegister(2, -1);
-                        return;
+                        delete file;
+                        break;
                     }
                     DEBUG('a', "\n Closing file with id %d", fid);
                     delete file;
                     // Trả về 0 nếu đóng file thành công
                     machine->WriteRegister(2, 0);
+                    
+                    break;
+                }
+                case SC_Read:
+                {
+                    DEBUG('a', "\n SC_Write call ...");
+                    DEBUG('a', "\n Reading virtual address of filename");
+                    int addr = machine->ReadRegister(4); // Lấy địa chỉ lưu bộ đệm
+                    DEBUG ('a', "\n Reading size of buffer.");
+                    int size = machine->ReadRegister(5); // Lấy kích cỡ bộ đệm
+                    DEBUG ('a', "\n Reading file ID.");
+                    int fID = machine->ReadRegister(6); // Lấy tham số id của file
+
+                    OpenFile* file = new OpenFile(fID); // Tạo biến con trỏ đọc file
+                    if (file == NULL) {
+                        printf("\n Error writing file with id %d", fID);
+                        machine->WriteRegister(2, -1);
+                        delete file;
+                        break;
+                    }
+
+                    char *buffer = new char [size + 1]; // Khai báo một chuỗi có độ dài là kích thước tối đa + 1
+                    int len = file->Read(buffer, size); // Lấy số kí tự trong chuỗi đọc ra
+                    buffer[size] = '\0'; // Đặt kí tự kết thúc chuỗi
+
+                    System2User(addr, size + 1, buffer);
+
+                    machine->WriteRegister(2, file->GetID()); // Trả về id của file
+                    delete file;
+                    delete[] buffer;
+                    
+                    break;
+                }
+                case SC_Write:
+                {
+                    DEBUG('a', "\n SC_Write call ...");
+                    DEBUG('a', "\n Reading virtual address of filename");
+                    int virtAddr = machine->ReadRegister(4); // Lấy địa chỉ lưu bộ đệm
+                    DEBUG ('a', "\n Reading size of buffer.");
+                    int size = machine->ReadRegister(5); // Lấy kích cỡ bộ đệm
+                    DEBUG ('a', "\n Reading file ID.");
+                    int fID = machine->ReadRegister(6); // Lấy tham số id của file
+
+                    char *buffer = User2System(virtAddr, MaxString); // chuyển dữ liệu bộ đệm từ User space sang Kernel space
+
+                    OpenFile* file = new OpenFile(fID); // Tạo biến con trỏ đọc file
+                    if (file == NULL) {
+                        printf("\n Error writing file with id %d", fID);
+                        machine->WriteRegister(2, -1);
+                        delete file;
+                        break;
+                    }
+
+                    file->Write(buffer, size); // Ghi buffer vào file
+
+                    machine->WriteRegister(2, file->GetID()); // Trả về id của file
+                    delete file;
+                    delete[] buffer;
                     break;
                 }
                 case SC_ReadInt:
@@ -290,7 +360,7 @@ ExceptionHandler(ExceptionType which)
                     // In chuỗi ra màn hình bắt đầu từ vị trí đọc
                     gSynchConsole->Write(buffer + printPos, 12 - printPos);
 
-                    delete buffer;
+                    delete[] buffer;
                     break;
                 }
                 case SC_ReadFloat:
@@ -306,6 +376,12 @@ ExceptionHandler(ExceptionType which)
                     DEBUG('a', "\n Synching number from console ...");
                     // Đọc tối đa 40 kí tự
                     int numOfChars = gSynchConsole->Read(buffer, 40);
+
+                    if (numOfChars == 40 && buffer[0] > 3 && buffer[1] > 4 && buffer[2] > 0) {
+                        printf("\n Invalid number");
+                        DEBUG('a', "\n Invalid number");
+                        machine->WriteRegister(2, 0);
+                    }
                     
                     // Nếu có kí tự đọc được
                     if (numOfChars > 0) {
@@ -364,7 +440,7 @@ ExceptionHandler(ExceptionType which)
                         machine->WriteRegister(2, 0);
                     }
 
-                    delete buffer;
+                    delete[] buffer;
                     break;
                 }
                 case SC_PrintFloat:
@@ -420,15 +496,26 @@ ExceptionHandler(ExceptionType which)
                     // In chuỗi ra màn hình bắt đầu từ vị trí đọc
                     gSynchConsole->Write(buffer + printPos, endPos - printPos);
 
-                    delete buffer;
+                    delete[] buffer;
                     break;
                 }
                 case SC_ReadChar:
                 {
-                    char buffer;
-                    int temp = gSynchConsole->Read(&buffer, 1); // Đọc 1 kí tự do người dùng nhập
+                    char *buffer = new char [MaxString];
+                    int size = gSynchConsole->Read(buffer, MaxString); // Đọc 1 kí tự do người dùng nhập
 
-                    machine->WriteRegister(2, buffer);
+                    if (size == 0) {
+                        printf("\n Invalid input: The input must not be null");
+                        DEBUG('a', "\n Invalid input: The input must not be null");
+                        machine->WriteRegister(2, 0);
+                    } else if (size > 1) {
+                        printf("\n Invalid input: The input must be one character");
+                        DEBUG('a', "\n Invalid input: The input must be one character");
+                        machine->WriteRegister(2, 0);                        
+                    } else 
+                        machine->WriteRegister(2, *buffer);
+
+                    delete []buffer;
                     break;
                 }
                 case SC_PrintChar:
@@ -439,7 +526,17 @@ ExceptionHandler(ExceptionType which)
                 }
                 case SC_ReadString:
                 {
-                    char *buffer;
+                    int addr = machine->ReadRegister(4); // Lấy địa chỉ buffer
+                    int len = machine->ReadRegister(5); // Lấy kích thước là tham số truyền vào hàm
+
+                    char *buffer = new char [len + 1]; // Khai báo một chuỗi có độ dài là kích thước tối đa + 1
+                    int size = gSynchConsole->Read(buffer, len); // Lấy số kí tự trong chuỗi nhập vào
+                    buffer[size] = '\0'; // Đặt kí tự kết thúc chuỗi
+
+                    System2User(addr, size + 1, buffer);
+                    machine->WriteRegister(2, size);
+
+                    delete []buffer;
                     break;
                 }
                 case SC_PrintString:
@@ -452,7 +549,7 @@ ExceptionHandler(ExceptionType which)
                         gSynchConsole->Write(buffer + index++, 1); // In một kí tự ở vị trí thứ i trong chuỗi
                     }
 
-                    delete buffer;
+                    delete []buffer;
                     break;
                 }
                 default:
@@ -460,6 +557,7 @@ ExceptionHandler(ExceptionType which)
                     interrupt->Halt();
                     break;
             }
+            IncPCReg();
             break;
 
         case PageFaultException:
@@ -503,7 +601,7 @@ ExceptionHandler(ExceptionType which)
             break;
     }
 
-    delete input;
-    delete output;
+    delete[] input;
+    delete[] output;
     delete gSynchConsole;
 }
