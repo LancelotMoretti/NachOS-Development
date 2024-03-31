@@ -232,11 +232,11 @@ ExceptionHandler(ExceptionType which)
 
                     char *buffer = new char [size + 1]; // Khai báo một chuỗi có độ dài là kích thước tối đa + 1
                     int len = file->Read(buffer, size); // Lấy số kí tự trong chuỗi đọc ra
-                    buffer[size] = '\0'; // Đặt kí tự kết thúc chuỗi
+                    buffer[len] = '\0'; // Đặt kí tự kết thúc chuỗi
 
-                    System2User(addr, size + 1, buffer);
+                    System2User(addr, len + 1, buffer);
 
-                    machine->WriteRegister(2, file->GetID()); // Trả về id của file
+                    machine->WriteRegister(2, len); // Số kí tự đọc được
                     delete file;
                     delete[] buffer;
                     
@@ -262,9 +262,9 @@ ExceptionHandler(ExceptionType which)
                         break;
                     }
 
-                    file->Write(buffer, size); // Ghi buffer vào file
+                    int len = file->Write(buffer, size); // Ghi buffer vào file
 
-                    machine->WriteRegister(2, file->GetID()); // Trả về id của file
+                    machine->WriteRegister(2, len);
                     delete file;
                     delete[] buffer;
                     break;
@@ -537,10 +537,12 @@ ExceptionHandler(ExceptionType which)
                     int addr = machine->ReadRegister(4);
                     buffer = User2System(addr, MaxString); // chuyển dữ liệu từ User space sang Kernel space
                     int index = 0;
+                    int count = 0;
                     while (buffer[index] != '\n' && index < MaxString) {
-                        gSynchConsole->Write(buffer + index++, 1); // In một kí tự ở vị trí thứ i trong chuỗi
+                        count += gSynchConsole->Write(buffer + index++, 1); // In một kí tự ở vị trí thứ i trong chuỗi
                     }
 
+                    machine->WriteRegister(2, count); // Ghi số kí tự in được vào thanh ghi r2
                     delete []buffer;
                     break;
                 }
@@ -549,7 +551,7 @@ ExceptionHandler(ExceptionType which)
                     interrupt->Halt();
                     break;
             }
-            IncPCReg();
+            IncPCReg(); // Tăng thanh ghi PC
             break;
 
         case PageFaultException:
