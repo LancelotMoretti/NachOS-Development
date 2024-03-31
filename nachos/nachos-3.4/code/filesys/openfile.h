@@ -52,6 +52,8 @@ class OpenFile {
 		}
 
     int Length() { Lseek(file, 0, 2); return Tell(file); }
+
+	int GetID() { return file; }
     
   private:
     int file;
@@ -85,9 +87,12 @@ class OpenFile {
 					// file (this interface is simpler 
 					// than the UNIX idiom -- lseek to 
 					// end of file, tell, lseek back 
+
+	int GetID();
     
   private:
     FileHeader *hdr;			// Header for this file 
+	int fileID;				// File ID
     int seekPosition;			// Current position within the file
 };
 

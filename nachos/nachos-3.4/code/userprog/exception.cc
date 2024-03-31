@@ -23,9 +23,7 @@
 
 #include "copyright.h"
 #include "system.h"
-#include "machine.h"
 #include "syscall.h"
-#include "synchcons.h"
 
 #define MaxFileLength 32 // Chiều dài tên file tối đa
 #define MaxString 256 // Chiều dài chuỗi tối đa
@@ -66,14 +64,11 @@ int System2User(int virtAddr, int len, char* buffer) {
 }
 
 void IncPCReg() {
-    // Compute next pc, but don't install in case there's an error or branch.
-    int pcAfter = registers[NextPCReg] + 4;
-
-    // Advance program counters.
-    registers[PrevPCReg] = registers[PCReg];	// for debugging, in case we
-						// are jumping into lala-land
-    registers[PCReg] = registers[NextPCReg];
-    registers[NextPCReg] = pcAfter;
+    int curPC = machine->ReadRegister(PCReg);
+    machine->WriteRegister(PrevPCReg, curPC);
+    curPC = machine->ReadRegister(NextPCReg);
+    machine->WriteRegister(PCReg, curPC);
+    machine->WriteRegister(NextPCReg, curPC + 4);
 }
 
 //----------------------------------------------------------------------
@@ -99,15 +94,10 @@ void IncPCReg() {
 //	are in machine.h.
 //----------------------------------------------------------------------
 
-static SynchConsole *gSynchConsole;
-
 void
 ExceptionHandler(ExceptionType which)
 {
     int type = machine->ReadRegister(2);
-    char *input = new char[MaxString + 1];
-    char *output = new char[MaxString + 1];
-    gSynchConsole = new SynchConsole(input, output);
 
     switch(which)
     {
@@ -431,6 +421,7 @@ ExceptionHandler(ExceptionType which)
                         number += (float)decimalPart / 10000000;
 
                         // Ghi kết quả vào thanh ghi r2
+                        number *= multiplier;
                         machine->WriteRegister(2, *(int*)&number);
                     }
                     else {
@@ -449,7 +440,8 @@ ExceptionHandler(ExceptionType which)
                     int printPos = 40;
                     int endPos = 33;
                     // Đọc số thực từ thanh ghi r4
-                    float number = *(float*)&machine->ReadRegister(4);
+                    int tmpI = machine->ReadRegister(4);
+                    float number = *((float*)&tmpI);
                     int decimalPart = 0;
                     
                     // Lấy phần thập phân
@@ -600,8 +592,7 @@ ExceptionHandler(ExceptionType which)
             interrupt->Halt();
             break;
     }
-
-    delete[] input;
-    delete[] output;
-    delete gSynchConsole;
 }
+
+#undef MaxFileLength
+#undef MaxString

@@ -8,14 +8,14 @@ int main() {
 
     /*Create a file*/
     if (Create("text.txt") == -1) {
-        print("\n Create file ~");
-        print(filename);
-        print(" failed.\n");
+        PrintString("\n Create file ~");
+        PrintString(filename);
+        PrintString(" failed.\n");
     }
     else {
-        print("\n Create file ~");
-        print(filename);
-        print(" successfully.\n");
+        PrintString("\n Create file ~");
+        PrintString(filename);
+        PrintString(" successfully.\n");
     }
 
     Halt();
