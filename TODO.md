@@ -120,6 +120,7 @@
 
 ### Bùi Tá Phát
 - [ ] Further analyze the role of the functions
+- [ ] Analyze how make command works
 - [ ] quicksort.c
 - [ ] mergesort.c
 
@@ -135,5 +136,6 @@
 
 ### Đào Ngọc Thiện
 - [ ] Further analyze the role of the functions
+- [ ] Analyze how make command works
 - [ ] help.c
 - [ ] ascii.c
