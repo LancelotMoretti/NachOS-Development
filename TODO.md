@@ -96,10 +96,10 @@
 - [ ] Research folder c++ example
 
 ### Đào Ngọc Thiện
-- [ ] System call ReadChar
-- [ ] System call PrintChar
+- [x] System call ReadChar
+- [x] System call PrintChar
 - [ ] System call ReadString
-- [ ] System call PrintString
+- [x] System call PrintString
 - [ ] System call ReadFile
 - [ ] System call WriteFile
 
