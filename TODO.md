@@ -107,14 +107,14 @@
 
 ### Đào Việt Hoàng
 - [ ] Conclude the role of functions in:
-    - [ ] progtest.cc
-    - [ ] syscall.h
-    - [ ] exception.cc
+    - [x] progtest.cc
+    - [x] syscall.h
+    - [x] exception.cc
     - [ ] bitmap.cc and bitmap.h
     - [ ] openfile.h
     - [ ] translate.cc and translate.h
-    - [ ] machine.h and machine.cc
-    - [ ] mipssim.cc
+    - [x] machine.h and machine.cc
+    - [x] mipssim.cc
     - [ ] console.h and console.cc
     - [ ] synchcons.h and synchcons.cc
 
