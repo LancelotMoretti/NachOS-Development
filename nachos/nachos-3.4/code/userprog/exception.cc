@@ -549,7 +549,7 @@ ExceptionHandler(ExceptionType which)
                     int addr = machine->ReadRegister(4);
                     char *buffer = User2System(addr, MaxString); // chuyển dữ liệu từ User space sang Kernel space
                     int index = 0, count = 0;
-                    while (buffer[index] != '\n' && buffer[index] != '\0' && index < MaxString) {
+                    while (buffer[index] != '\0' && index < MaxString) {
                         count += gSynchConsole->Write(buffer + index++, 1); // In một kí tự ở vị trí thứ i trong chuỗi
                     }
 
