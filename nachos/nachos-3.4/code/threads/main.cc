@@ -125,10 +125,6 @@ main(int argc, char **argv)
 					// Nachos will loop forever waiting 
 					// for console input
 		}
-	
-		if (gSynchConsole != NULL) {
-			delete gSynchConsole;
-		}
 #endif // USER_PROGRAM
 #ifdef FILESYS
 		if (!strcmp(*argv, "-cp")) { 		// copy from UNIX to Nachos
