@@ -234,9 +234,22 @@ ExceptionHandler(ExceptionType which)
                     int len = file->Read(buffer, size); // Lấy số kí tự trong chuỗi đọc ra
                     buffer[len] = '\0'; // Đặt kí tự kết thúc chuỗi
 
+                    // Kiểm tra kết thúc file
+                    bool isEOF = false;
+                    for (int i = 0; i < len; i++) {
+                        if (buffer[i] == EOF) {
+                            len = i + 1;
+                            buffer[i] = '\0';
+                            isEOF = true;
+                            break;
+                        }
+                    }
+
                     System2User(addr, len + 1, buffer);
 
-                    machine->WriteRegister(2, len); // Số kí tự đọc được
+                    if (isEOF) machine->WriteRegister(2, -2); // Gặp điểm kết thúc file
+                    else machine->WriteRegister(2, len); // Không gặp điểm kết thúc file thì in ra số kí tự đọc được
+
                     delete file;
                     delete[] buffer;
                     
@@ -263,8 +276,8 @@ ExceptionHandler(ExceptionType which)
                     }
 
                     int len = file->Write(buffer, size); // Ghi buffer vào file
-
-                    machine->WriteRegister(2, len);
+                    if (len != size - 1) machine->WriteRegister(2, -2);
+                    else machine->WriteRegister(2, len);
                     delete file;
                     delete[] buffer;
                     break;
@@ -533,12 +546,10 @@ ExceptionHandler(ExceptionType which)
                 }
                 case SC_PrintString:
                 {
-                    char *buffer;
                     int addr = machine->ReadRegister(4);
-                    buffer = User2System(addr, MaxString); // chuyển dữ liệu từ User space sang Kernel space
-                    int index = 0;
-                    int count = 0;
-                    while (buffer[index] != '\n' && index < MaxString) {
+                    char *buffer = User2System(addr, MaxString); // chuyển dữ liệu từ User space sang Kernel space
+                    int index = 0, count = 0;
+                    while (buffer[index] != '\n' && buffer[index] != '\0' && index < MaxString) {
                         count += gSynchConsole->Write(buffer + index++, 1); // In một kí tự ở vị trí thứ i trong chuỗi
                     }
 

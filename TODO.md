@@ -98,10 +98,10 @@
 ### Đào Ngọc Thiện
 - [x] System call ReadChar
 - [x] System call PrintChar
-- [ ] System call ReadString
+- [x] System call ReadString
 - [x] System call PrintString
-- [ ] System call ReadFile
-- [ ] System call WriteFile
+- [x] System call ReadFile
+- [x] System call WriteFile
 
 ## State 3 (30/03/2024 - 03/04/2024)
 
