@@ -238,11 +238,10 @@ ExceptionHandler(ExceptionType which)
                     DEBUG ('a', "\n Reading file ID.");
                     int fID = machine->ReadRegister(6); // Lấy tham số id của file
 
-                    OpenFile* file = new OpenFile(fID); // Tạo biến con trỏ đọc file
+                    OpenFile* file = fileSystem->openFileList[fID]; // Tạo biến con trỏ đọc file
                     if (file == NULL) {
-                        printf("\n Error writing file with id %d", fID);
+                        printf("\n Error reading file with id %d", fID);
                         machine->WriteRegister(2, -1);
-                        delete file;
                         break;
                     }
 
@@ -269,7 +268,6 @@ ExceptionHandler(ExceptionType which)
                     if (isEOF) machine->WriteRegister(2, -2); // Gặp điểm kết thúc file
                     else machine->WriteRegister(2, len); // Không gặp điểm kết thúc file thì in ra số kí tự đọc được
 
-                    delete file;
                     delete[] buffer;
                     
                     break;
@@ -286,18 +284,24 @@ ExceptionHandler(ExceptionType which)
 
                     char *buffer = User2System(virtAddr, MaxString); // chuyển dữ liệu bộ đệm từ User space sang Kernel space
 
-                    OpenFile* file = new OpenFile(fID); // Tạo biến con trỏ đọc file
+                    OpenFile* file = fileSystem->openFileList[fID]; // Tạo biến con trỏ đọc file
                     if (file == NULL) {
                         printf("\n Error writing file with id %d", fID);
+                        DEBUG('a', "\n Error writing file with id %d", fID);
                         machine->WriteRegister(2, -1);
-                        delete file;
+                        break;
+                    }
+
+                    if (file->GetID() == 1) { // File chỉ đọc 
+                        printf("\n This is a read-only file, can not write!");
+                        DEBUG('a', "\n This is a read-only file, can not write!");
+                        machine->WriteRegister(2, -1);
                         break;
                     }
 
                     int len = file->Write(buffer, size); // Ghi buffer vào file
                     if (len != size - 1) machine->WriteRegister(2, -2);
                     else machine->WriteRegister(2, len);
-                    delete file;
                     delete[] buffer;
                     break;
                 }
