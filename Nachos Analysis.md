@@ -81,10 +81,7 @@ Các hàm tương tác tập tin và console
 
 ### Thông tin
 
-Các hàm chuyển giao user program về cho kernel của Nachos. Có hai tình huống dẫn đến việc chuyển giao:
-
-- user program gọi syscall
-- user program có lỗi khiến cho CPU không thể thực hiện tác vụ
+Các hàm chuyển giao user program về cho kernel của Nachos. Có hai tình huống dẫn đến việc chuyển giao: user program gọi syscall hoặc có lỗi khiến cho CPU không thể thực hiện tác vụ.
 
 ### Các hàm
 - `char* User2System(int virtAddr, int limit)`: sao chép string từ vùng nhớ của người dùng qua vùng nhớ của hệ thống
@@ -92,7 +89,27 @@ Các hàm chuyển giao user program về cho kernel của Nachos. Có hai tình
 - `void ExceptionHandler(ExceptionType which)`: xử lý các exception, bao gồm syscall hoặc exception do lỗi từ user program
 
 ## bitmap.h và bitmap.cc
-> Chưa hoàn thiện
+
+### Thông tin
+
+Quản lý bitmap - có nhiệm vụ lưu vết các ô nhớ vật lý. Các bitmap được lưu dưới dạng một số nguyên không dấu, và có thể thực hiện các thao tác trên bit để lấy được thông tin cần thiết.
+
+### bitmap.h
+
+Lớp `BitMap` được định nghĩa là một mảng các bit. Thường được sử dụng để quản lý việc cấp phát cho các thành phần, chẳng hạn như các sector hoặc các trang trên bộ nhớ chính. Giá trị của từng bit cho biết sector hoặc trang tương ứng có đang free (tương ứng giá trị `0`) hay không (tương ứng giá trị `1`).
+
+### bitmap.cc
+
+ Chứa các hàm quản lý bitmap:
+ - `BitMap::BitMap(int nitems)`: khởi tạo một bitmap với số bit là `nitems`
+ - `void BitMap::Mark(int which)`: cài giá trị `1` cho bit ở vị trí `which`
+ - `void BitMap::Clear(int which)`: cài giá trị `0` cho bit ở vị trí `which`
+ - `bool BitMap::Test(int which)`: kiểm tra giá trị ở bit `which`, trả về true nếu giá trị là `1`
+ - `int BitMap::Find()`: tìm bit đầu tiên có giá trị `0`, sau đó gán chúng bằng `1`
+ - `int BitMap::NumClear()`: đếm số bit có giá trị `0`
+ - `void BitMap::Print()`: in toàn bộ bitmap ra, thường dùng cho debug
+ - `void BitMap::FetchFrom(OpenFile *file)`: đọc bitmap từ một Nachos file
+ - `void BitMap::WriteBack(OpenFile *file)`: ghi bitmap lên một Nachos file
 
 ## openfile.h
 
@@ -201,3 +218,13 @@ Các hàm
 
 ## synchcons.h và synchcons.cc
 > Chưa hoàn thiện
+### Thông tin
+
+Các hàm truy xuất giữa console và người dùng trong Nachos. Được định nghĩa ở lớp `SynchConsole` trong file synchcons.h.
+
+## synchcons.cc
+
+- `SynchConsole::SynchConsole()`: tạo một thiết bị console đồng bộ hóa với nhập xuất tiêu chuẩn (`stdin`/`stdout`).
+- `SynchConsole::SynchConsole(char *in, char *out)`: tương tự như trên, nhưng với tên file nhập và xuất
+- `int SynchConsole::Write(char *from, int numBytes)`: ghi một số lượng `numBytes` các byte từ buffer lên thiết bị I/O, trả về số lượng byte đã ghi
+- `int SynchConsole::Read(char *into, int numBytes)`: đọc một số lượng `numBytes` các byte từ thiết bị I/O lên buffer, trả về số lượng byte đã đọc
