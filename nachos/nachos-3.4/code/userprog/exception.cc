@@ -239,6 +239,12 @@ ExceptionHandler(ExceptionType which)
                     DEBUG ('a', "\n Reading file ID.");
                     int fID = machine->ReadRegister(6); // Lấy tham số id của file
 
+                    if (fID < 2 || fID > 9) {
+                        printf("\n Invalid file id");
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
+
                     OpenFile* file = fileSystem->openFileList[fID]; // Tạo biến con trỏ đọc file
                     if (file == NULL) {
                         printf("\n Error reading file with id %d", fID);
