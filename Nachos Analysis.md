@@ -173,10 +173,31 @@ Mô phỏng lại CPU MIPS R2/3000.
 - `static void Mult(int a, int b, bool signedArith, int* hiPtr, int* loPtr)`: thực hiện phép nhân trên R2000.
 
 ## console.h và console.cc
-> Chưa hoàn thiện
+
 ### Thông tin
 
 Mô phỏng lại thiết bị nhập xuất qua terminal. 
+
+Console là thiết bị không đồng nhất. Khi một ký tự được ghi lên thiết bị, thủ tục trả về ngay lập tức và interrupt handler sẽ được gọi khi I/O hoàn tất. Khi đọc, interrupt handler được gọi khi một ký tự mới xuất hiện.
+
+Người dùng có thể gọi bất kỳ thủ tục nào khi I/O interrupt xuất hiện.
+
+### console.h
+
+Lớp `Console` là một thiết bị nhập xuất. Quá trình nhập xuất được mô phỏng qua việc đọc/ghi lên file UNIX.
+
+### console.cc
+
+Các hàm
+- `Console::Console(char *readFile, char *writeFile, VoidFunctionPtr readAvail, VoidFunctionPtr writeDone, int callArg)`: khởi tạo console mới.
+    - `readFile`: UNIX file mô phỏng nhập (`NULL` tức là dùng `stdin`)
+    - `writeFile`: UNIX file mô phỏng xuất (`NULL` tức là dùng `stdout`)
+    - `readAvail`: interrupt handler được gọi khi có ký tự mới xuất hiện
+    - `writeDone`: interrupt handler được gọi khi ký tự đã được ghi để ký tự tiếp theo được ghi.
+- `void Console::CheckCharAvail()`: kiểm tra xem ký tự tiếp theo có thể được nhập hay không, bằng cách kiểm tra kích thước của bộ đệm có đủ lớn hay không. Gọi interrupt handler cho việc nhập khi ký tự được đưa vào buffer
+- `void Console::WriteDone()`: thủ tục được gọi khi interrupt handlder cho việc xuất được gọi, để báo hiệu cho kernel việc in ký tự đã hoàn thành.
+- `char Console::GetChar()`: đọc ký tự từ input buffer.
+- `void Console::PutChar(char ch)`: ghi ký tự lên màn hình và lên lịch cho interrupt
 
 ## synchcons.h và synchcons.cc
 > Chưa hoàn thiện

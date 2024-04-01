@@ -115,7 +115,7 @@
     - [x] translate.cc and translate.h
     - [x] machine.h and machine.cc
     - [x] mipssim.cc
-    - [ ] console.h and console.cc
+    - [x] console.h and console.cc
     - [ ] synchcons.h and synchcons.cc
 
 ### Bùi Tá Phát
