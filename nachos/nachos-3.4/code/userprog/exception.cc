@@ -199,6 +199,7 @@ ExceptionHandler(ExceptionType which)
                                 delete[] filename;
                                 break;
                             }
+                            fileSystem->openFileList[freeBlock] = file;
                             machine->WriteRegister(2, freeBlock);
                         }
                         else if (type == 2) { // stdin
