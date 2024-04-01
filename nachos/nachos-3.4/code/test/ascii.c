@@ -3,7 +3,7 @@
 int main() {
     //// Khai báo
     int i = 0, j = 0, k = 0; // Biến đếm
-    char *header, *endLine, *cur, *space1, *space2, *space3;
+    char *header, *endLine, *cur, *space1, *space2, *space3, *num;
     char temp[4];
     OpenFileId asciiFile; // Con trỏ file
 
@@ -30,8 +30,6 @@ int main() {
         // In nội dung bảng ascii ra màn hình và ghi vào file ascii.txt
         for (i = 32; i <= 127; i += 8) { // Chỉ in các kí tự ascii từ 32 tới 127
             for (j; j < 8; j++) {
-                char *num; // Temp
-
                 if (i < 100) { // Trường hợp dạng decimal có 2 chữ số
                     // Chuyển i từ kiểu int sang kiểu char
                     num = &temp;
@@ -51,7 +49,6 @@ int main() {
                 }
                 else { // Trường hợp dạng decimal có 3 chữ số
                     // Chuyển i từ kiểu int sang kiểu char
-                    char temp[4];
                     num = &temp;
                     temp[0] = 49; // Kí tự hàng trăm: 1
                     temp[1] = (i - 100) / 10 + 48; // Kí tự hàng chục
