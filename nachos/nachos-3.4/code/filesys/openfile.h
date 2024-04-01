@@ -29,6 +29,7 @@
 class OpenFile {
   public:
     OpenFile(int f) { file = f; currentOffset = 0; }	// open the file
+	OpenFile(int f, int t) { file = f; currentOffset = 0; type = t; } // open the file with type
     ~OpenFile() { Close(file); }			// close the file
 
     int ReadAt(char *into, int numBytes, int position) { 
@@ -57,6 +58,7 @@ class OpenFile {
     
   private:
     int file;
+	int type;
     int currentOffset;
 };
 
@@ -67,6 +69,7 @@ class OpenFile {
   public:
     OpenFile(int sector);		// Open a file whose header is located
 					// at "sector" on the disk
+	OpenFile(int sector, int t);	// Open a file with type
     ~OpenFile();			// Close the file
 
     void Seek(int position); 		// Set the position from which to 
@@ -93,6 +96,7 @@ class OpenFile {
   private:
     FileHeader *hdr;			// Header for this file 
 	int fileID;				// File ID
+	int type;				// File type
     int seekPosition;			// Current position within the file
 };
 

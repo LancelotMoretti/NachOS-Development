@@ -151,12 +151,21 @@ ExceptionHandler(ExceptionType which)
                 }
                 case SC_Open:
                 {
-                    int virtAddr;
+                    int virtAddr, type;
                     char* filename;
                     DEBUG('a', "\n SC_Open call ...");
                     DEBUG('a', "\n Reading virtual address of filename");
                     // Lấy tham số tên tập tin từ thanh ghi r4
                     virtAddr = machine->ReadRegister(4);
+                    DEBUG('a', "\n Reading type of file");
+                    // Lấy tham số type của file từ thanh ghi r5
+                    type = machine->ReadRegister(5);
+                    if (type != 0 && type != 1) {
+                        printf("\n Invalid type of file");
+                        DEBUG('a', "\n Invalid type of file");
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
                     DEBUG ('a', "\n Reading filename.");
                     // MaxFileLength là = 32
                     filename = User2System(virtAddr, MaxFileLength + 1);
@@ -176,7 +185,7 @@ ExceptionHandler(ExceptionType which)
                     // hành Linux, chúng ta không quản ly trực tiếp các block trên
                     // đĩa cứng cấp phát cho file, việc quản ly các block của file
                     // trên ổ đĩa là một đồ án khác
-                    OpenFile* file = fileSystem->Open(filename);
+                    OpenFile* file = fileSystem->Open(filename, type);
                     if (file == NULL) {
                         printf("\n Error open file '%s'", filename);
                         machine->WriteRegister(2, -1);

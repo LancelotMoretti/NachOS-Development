@@ -39,3 +39,5 @@
 2. The library in this folder is used to simulate the file system in NachOS
 
 > **_NOTE:_** Remember to check the implementation and usage of file system in NachOS
+
+# CheckCharAvail error when "./nachos"

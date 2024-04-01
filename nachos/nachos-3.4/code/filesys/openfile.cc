@@ -25,6 +25,13 @@
 //	into memory while the file is open.
 //
 //	"sector" -- the location on disk of the file header for this file
+//  "t" -- the type of the file
+//  0 -- read and write
+//  1 -- read only
+//  2 -- write only
+//  3 -- stdin
+//  4 -- stdout
+//  5 -- stderr
 //----------------------------------------------------------------------
 
 OpenFile::OpenFile(int sector)
@@ -33,6 +40,15 @@ OpenFile::OpenFile(int sector)
     hdr->FetchFrom(sector);
     seekPosition = 0;
     fileID = sector;
+}
+
+OpenFile::OpenFile(int sector, int t)
+{
+    hdr = new FileHeader;
+    hdr->FetchFrom(sector);
+    seekPosition = 0;
+    fileID = sector;
+    type = t;
 }
 
 //----------------------------------------------------------------------

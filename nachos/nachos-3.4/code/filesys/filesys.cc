@@ -240,6 +240,22 @@ FileSystem::Open(char *name)
     return openFile;				// return NULL if not found
 }
 
+OpenFile *
+FileSystem::Open(char *name, int t)
+{
+    Directory *directory = new Directory(NumDirEntries);
+    OpenFile *openFile = NULL;
+    int sector;
+
+    DEBUG('f', "Opening file %s\n", name);
+    directory->FetchFrom(directoryFile);
+    sector = directory->Find(name); 
+    if (sector >= 0) 		
+    openFile = new OpenFile(sector, t);	// name was found in directory 
+    delete directory;
+    return openFile;				// return NULL if not found
+}
+
 //----------------------------------------------------------------------
 // FileSystem::Remove
 // 	Delete a file from the file system.  This requires:

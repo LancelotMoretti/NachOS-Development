@@ -71,3 +71,15 @@ createfile.o: createfile.c
 createfile: createfile.o start.o
 	$(LD) $(LDFLAGS) start.o createfile.o -o createfile.coff
 	../bin/coff2noff createfile.coff createfile
+
+# mergesort.o: mergesort.c
+# 	$(CC) $(CFLAGS) -c mergesort.c
+# mergesort: mergesort.o start.o
+# 	$(LD) $(LDFLAGS) start.o mergesort.o -o mergesort.coff
+# 	../bin/coff2noff mergesort.coff mergesort
+
+# quicksort.o: quicksort.c
+# 	$(CC) $(CFLAGS) -c quicksort.c
+# quicksort: quicksort.o start.o
+# 	$(LD) $(LDFLAGS) start.o quicksort.o -o quicksort.coff
+# 	../bin/coff2noff quicksort.coff quicksort
