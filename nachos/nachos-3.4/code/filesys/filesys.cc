@@ -140,6 +140,24 @@ FileSystem::FileSystem(bool format)
         freeMapFile = new OpenFile(FreeMapSector);
         directoryFile = new OpenFile(DirectorySector);
     }
+
+    openFileList = new OpenFile*[10];
+    for (int i = 0; i < 10; i++) {
+        openFileList[i] = NULL;
+    }
+    Create("stdin", 2);
+    Create("stdout", 3);
+    openFileList[0] = Open("stdin", 2);
+    openFileList[1] = Open("stdout", 3  );
+}
+
+FileSystem::~FileSystem() {
+    for (int i = 0; i < 10; i++) {
+        if (openFileList[i] != NULL) {
+            delete openFileList[i];
+        }
+    }
+    delete[] openFileList;
 }
 
 //----------------------------------------------------------------------
@@ -234,8 +252,10 @@ FileSystem::Open(char *name)
     DEBUG('f', "Opening file %s\n", name);
     directory->FetchFrom(directoryFile);
     sector = directory->Find(name); 
-    if (sector >= 0) 		
-	openFile = new OpenFile(sector);	// name was found in directory 
+    if (sector >= 0) {		
+	    openFile = new OpenFile(sector);	// name was found in directory 
+        openFileList[FindFreeBlock()] = openFile;
+    }
     delete directory;
     return openFile;				// return NULL if not found
 }
@@ -250,10 +270,32 @@ FileSystem::Open(char *name, int t)
     DEBUG('f', "Opening file %s\n", name);
     directory->FetchFrom(directoryFile);
     sector = directory->Find(name); 
-    if (sector >= 0) 		
-    openFile = new OpenFile(sector, t);	// name was found in directory 
+    if (sector >= 0) {		
+        openFile = new OpenFile(sector, t);	// name was found in directory 
+        openFileList[FindFreeBlock()] = openFile;
+    }
     delete directory;
     return openFile;				// return NULL if not found
+}
+
+bool
+FileSystem::Close(int id) {
+    if (openFileList[id] == NULL) {
+        return FALSE;
+    }
+    delete openFileList[id];
+    openFileList[id] = NULL;
+    return TRUE;
+}
+
+int
+FileSystem::FindFreeBlock() {
+    for (int i = 2; i < 10; i++) {
+        if (openFileList[i] == NULL) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 //----------------------------------------------------------------------

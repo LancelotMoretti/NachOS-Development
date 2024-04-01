@@ -172,31 +172,45 @@ ExceptionHandler(ExceptionType which)
                     if (filename == NULL) {
                         printf("\n Not enough memory in system");
                         DEBUG('a', "\n Not enough memory in system");
-                        machine->WriteRegister(2,-1); // trả về lỗi cho chương
+                        machine->WriteRegister(2, -1); // trả về lỗi cho chương
                         // trình người dùng
                         delete[] filename;
                         break;
                     }
                     DEBUG('a', "\n Finish reading filename.");
                     // DEBUG('a', "\n File name : '" << filename <<"'");
+                    
                     // Mở file
-                    // Dùng đối tượng fileSystem của lớp OpenFile để mở file,
-                    // việc mở file này là sử dụng các thủ tục mở file của hệ điều
-                    // hành Linux, chúng ta không quản ly trực tiếp các block trên
-                    // đĩa cứng cấp phát cho file, việc quản ly các block của file
-                    // trên ổ đĩa là một đồ án khác
-                    OpenFile* file = fileSystem->Open(filename, type);
-                    if (file == NULL) {
-                        printf("\n Error open file '%s'", filename);
+                    // Kiểm tra xem có chỗ trống trong bảng file không
+                    int freeBlock = fileSystem->FindFreeBlock();
+                    if (freeBlock == -1) {
+                        printf("\n No free block in file system");
+                        DEBUG('a', "\n No free block in file system");
                         machine->WriteRegister(2, -1);
                         delete[] filename;
                         break;
                     }
-                    // Trả về id của file
-                    machine->WriteRegister(2, file->GetID());
-                    delete file;
-                    delete[] filename;
-                    break;
+                    else {
+                        if (type == 0 || type == 1) { // Đọc ghi hoặc chỉ đọc
+                            OpenFile* file = fileSystem->Open(filename, type);
+                            if (file == NULL) {
+                                printf("\n Error open file '%s'", filename);
+                                machine->WriteRegister(2, -1);
+                                delete[] filename;
+                                break;
+                            }
+                            machine->WriteRegister(2, freeBlock);
+                        }
+                        else if (type == 2) { // stdin
+                            machine->WriteRegister(2, 0);
+                        }
+                        else {
+                            machine->WriteRegister(2, 1);
+                        }
+
+                        delete[] filename;
+                        break;
+                    }
                 }
                 case SC_Close:
                 {
@@ -205,20 +219,13 @@ ExceptionHandler(ExceptionType which)
                     // Lấy tham số id của file từ thanh ghi r4
                     int fid = machine->ReadRegister(4);
                     // Đóng file
-                    DEBUG('a', "\n Point to file with id %d", fid);
-                    // Dùng con trỏ của lớp OpenFile để trỏ đến file cần đóng
-                    OpenFile* file = new OpenFile(fid);
-                    if (file == NULL) {
+                    if (!fileSystem->Close(fid)) {
                         printf("\n Error close file with id %d", fid);
                         machine->WriteRegister(2, -1);
-                        delete file;
                         break;
                     }
-                    DEBUG('a', "\n Closing file with id %d", fid);
-                    delete file;
                     // Trả về 0 nếu đóng file thành công
                     machine->WriteRegister(2, 0);
-                    
                     break;
                 }
                 case SC_Read:

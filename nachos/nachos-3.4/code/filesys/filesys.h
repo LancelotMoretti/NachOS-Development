@@ -43,7 +43,29 @@
 				// implementation is available
 class FileSystem {
   public:
-    FileSystem(bool format) {}
+	OpenFile** openFileList;	// List of open files
+					// Public for easier access
+    
+	FileSystem(bool format) {
+		openFileList = new OpenFile*[10];
+		for (int i = 0; i < 10; i++) {
+			openFileList[i] = NULL;
+		}
+		Create("stdin", 0);
+		Create("stdout", 0);
+		openFileList[0] = new OpenFile(0, 2);
+		openFileList[1] = new OpenFile(1, 3);
+	}
+
+	~FileSystem() {
+		for (int i = 0; i < 10; i++) {
+			if (openFileList[i] != NULL) {
+				delete openFileList[i];
+			}
+		}
+		delete[] openFileList;
+	}
+	
 
     bool Create(char *name, int initialSize) { 
 		int fileDescriptor = OpenForWrite(name);
@@ -57,7 +79,8 @@ class FileSystem {
 		int fileDescriptor = OpenForReadWrite(name, FALSE);
 
 		if (fileDescriptor == -1) return NULL;
-		return new OpenFile(fileDescriptor);
+		openFileList[FindFreeBlock()] = new OpenFile(fileDescriptor);
+		return openFileList[FindFreeBlock()];
 	}
 
 	OpenFile* Open(char *name, int type) {
@@ -66,19 +89,27 @@ class FileSystem {
 			fileDescriptor = OpenForReadWrite(name, FALSE);
 		} else if (type == 1) {
 			fileDescriptor = OpenForRead(name);
-		} else if (type == 2) {
-			fileDescriptor = OpenForWrite(name);
-		} else if (type == 3) {
-			fileDescriptor = 0;
-		} else if (type == 4) {
-			fileDescriptor = 1;
-		}
-		else if (type == 5) {
-			fileDescriptor = 2;
 		}
 
 		if (fileDescriptor == -1) return NULL;
-		return new OpenFile(fileDescriptor, type);
+		openFileList[FindFreeBlock()] = new OpenFile(fileDescriptor, type);
+		return openFileList[FindFreeBlock()];
+	}
+
+	bool Close(int id) {
+		if (openFileList[id] == NULL) return FALSE;
+		delete openFileList[id];
+		openFileList[id] = NULL;
+		return TRUE;
+	}
+
+	int FindFreeBlock() {
+		for (int i = 2; i < 10; i++) {
+			if (openFileList[i] == NULL) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
     bool Remove(char *name) { return Unlink(name) == 0; }
@@ -88,18 +119,27 @@ class FileSystem {
 #else // FILESYS
 class FileSystem {
   public:
+	OpenFile** openFileList;		// List of open files
+						// Public for easier access
+
     FileSystem(bool format);		// Initialize the file system.
 					// Must be called *after* "synchDisk" 
 					// has been initialized.
     					// If "format", there is nothing on
 					// the disk, so initialize the directory
     					// and the bitmap of free blocks.
+	
+	~FileSystem();			// Destructor
 
     bool Create(char *name, int initialSize);  	
 					// Create a file (UNIX creat)
 
     OpenFile* Open(char *name); 	// Open a file (UNIX open)
 	OpenFile* Open(char *name, int t); // Open a file with type
+
+	bool Close(int id);		// Close a file
+
+	int FindFreeBlock();			// Find a free block in the file system
 
     bool Remove(char *name);  		// Delete a file (UNIX unlink)
 

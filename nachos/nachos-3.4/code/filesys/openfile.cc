@@ -28,10 +28,8 @@
 //  "t" -- the type of the file
 //  0 -- read and write
 //  1 -- read only
-//  2 -- write only
-//  3 -- stdin
-//  4 -- stdout
-//  5 -- stderr
+//  2 -- stdin
+//  3 -- stdout
 //----------------------------------------------------------------------
 
 OpenFile::OpenFile(int sector)
@@ -133,7 +131,9 @@ OpenFile::Write(char *into, int numBytes)
 int
 OpenFile::ReadAt(char *into, int numBytes, int position)
 {
+    printf("ReadAt\n");
     int fileLength = hdr->FileLength();
+    printf("fileLength: %d\n", fileLength);
     int i, firstSector, lastSector, numSectors;
     char *buf;
 

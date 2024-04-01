@@ -1,11 +1,16 @@
 #include "syscall.h"
 
 int main() {
-    OpenFileId helpFile = Open("mota.txt");
+    OpenFileId helpFile = Open("mota.txt", 1);
 
-    char *buffer;
-    while (Read(buffer, 1, helpFile) >= 0) PrintChar(*buffer);
+    if (helpFile == -1) {
+        PrintString("Error opening file\n");
+    }
+    else {
+        char* buffer = "Temporary buffer";
+        while (Read(buffer, 1, helpFile) > 0) PrintChar(buffer[0]);
 
-    Close(helpFile);
+        Close(helpFile);
+    }
     Halt();
 }

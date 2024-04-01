@@ -4,10 +4,10 @@
 
 int main() {
     int len;
-    char filename[] = "text.txt";
+    char *filename = "text.txt";
 
     /*Create a file*/
-    if (Create(filename) == -1) {
+    if (Create("text.txt") == -1) {
         PrintString("\n Create file ~");
         PrintString(filename);
         PrintString(" failed.\n");
