@@ -111,8 +111,8 @@
     - [x] syscall.h
     - [x] exception.cc
     - [ ] bitmap.cc and bitmap.h
-    - [ ] openfile.h
-    - [ ] translate.cc and translate.h
+    - [x] openfile.h
+    - [x] translate.cc and translate.h
     - [x] machine.h and machine.cc
     - [x] mipssim.cc
     - [ ] console.h and console.cc
