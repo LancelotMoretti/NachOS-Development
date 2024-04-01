@@ -1,0 +1,5 @@
+----- GROUP INFORMATION -----
+-- 22127121 - Dao Viet Hoang
+-- 22127320 - Bui Ta Phat
+-- 22127432 - Dang Thanh Tu
+-- 22127486 - Dao Ngoc Thien
