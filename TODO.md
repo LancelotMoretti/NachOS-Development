@@ -110,13 +110,13 @@
     - [x] progtest.cc
     - [x] syscall.h
     - [x] exception.cc
-    - [ ] bitmap.cc and bitmap.h
+    - [x] bitmap.cc and bitmap.h
     - [x] openfile.h
     - [x] translate.cc and translate.h
     - [x] machine.h and machine.cc
     - [x] mipssim.cc
     - [x] console.h and console.cc
-    - [ ] synchcons.h and synchcons.cc
+    - [x] synchcons.h and synchcons.cc
 
 ### Bùi Tá Phát
 - [ ] Further analyze the role of the functions
