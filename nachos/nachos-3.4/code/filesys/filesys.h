@@ -79,8 +79,9 @@ class FileSystem {
 		int fileDescriptor = OpenForReadWrite(name, FALSE);
 
 		if (fileDescriptor == -1) return NULL;
-		openFileList[FindFreeBlock()] = new OpenFile(fileDescriptor);
-		return openFileList[FindFreeBlock()];
+		int freeBlock = FindFreeBlock();
+		openFileList[freeBlock] = new OpenFile(fileDescriptor);
+		return openFileList[freeBlock];
 	}
 
 	OpenFile* Open(char *name, int type) {
@@ -92,8 +93,9 @@ class FileSystem {
 		}
 
 		if (fileDescriptor == -1) return NULL;
-		openFileList[FindFreeBlock()] = new OpenFile(fileDescriptor, type);
-		return openFileList[FindFreeBlock()];
+		int freeBlock = FindFreeBlock();
+		openFileList[freeBlock] = new OpenFile(fileDescriptor, type);
+		return openFileList[freeBlock];
 	}
 
 	bool Close(int id) {
