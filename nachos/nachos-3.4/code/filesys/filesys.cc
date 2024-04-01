@@ -252,10 +252,8 @@ FileSystem::Open(char *name)
     DEBUG('f', "Opening file %s\n", name);
     directory->FetchFrom(directoryFile);
     sector = directory->Find(name); 
-    if (sector >= 0) {		
+    if (sector >= 0) 		
 	    openFile = new OpenFile(sector);	// name was found in directory 
-        openFileList[FindFreeBlock()] = openFile;
-    }
     delete directory;
     return openFile;				// return NULL if not found
 }
@@ -270,10 +268,8 @@ FileSystem::Open(char *name, int t)
     DEBUG('f', "Opening file %s\n", name);
     directory->FetchFrom(directoryFile);
     sector = directory->Find(name); 
-    if (sector >= 0) {		
+    if (sector >= 0) 		
         openFile = new OpenFile(sector, t);	// name was found in directory 
-        openFileList[FindFreeBlock()] = openFile;
-    }
     delete directory;
     return openFile;				// return NULL if not found
 }

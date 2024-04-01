@@ -218,3 +218,15 @@ OpenFile::GetID()
 {
     return fileID;
 }
+
+int
+OpenFile::GetType()
+{
+    return type;
+}
+
+int
+OpenFile::GetCurSeekPos()
+{
+    return seekPosition;
+}

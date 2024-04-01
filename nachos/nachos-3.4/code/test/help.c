@@ -9,7 +9,7 @@ int main() {
     else {
         char* buffer = "Temporary buffer";
         while (Read(buffer, 1, helpFile) > 0) PrintChar(buffer[0]);
-
+        PrintChar('\n');
         Close(helpFile);
     }
     Halt();

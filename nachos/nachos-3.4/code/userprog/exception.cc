@@ -199,6 +199,7 @@ ExceptionHandler(ExceptionType which)
                                 delete[] filename;
                                 break;
                             }
+                            fileSystem->openFileList[freeBlock] = file;
                             machine->WriteRegister(2, freeBlock);
                         }
                         else if (type == 2) { // stdin
@@ -237,6 +238,12 @@ ExceptionHandler(ExceptionType which)
                     int size = machine->ReadRegister(5); // Lấy kích cỡ bộ đệm
                     DEBUG ('a', "\n Reading file ID.");
                     int fID = machine->ReadRegister(6); // Lấy tham số id của file
+
+                    if (fID < 2 || fID > 9) {
+                        printf("\n Invalid file id");
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
 
                     OpenFile* file = fileSystem->openFileList[fID]; // Tạo biến con trỏ đọc file
                     if (file == NULL) {
@@ -281,6 +288,12 @@ ExceptionHandler(ExceptionType which)
                     int size = machine->ReadRegister(5); // Lấy kích cỡ bộ đệm
                     DEBUG ('a', "\n Reading file ID.");
                     int fID = machine->ReadRegister(6); // Lấy tham số id của file
+
+                    if (fID < 2 || fID > 9) {
+                        printf("\n Invalid file id");
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
 
                     char *buffer = User2System(virtAddr, MaxString); // chuyển dữ liệu bộ đệm từ User space sang Kernel space
 

@@ -53,15 +53,13 @@ class FileSystem {
 		}
 		Create("stdin", 0);
 		Create("stdout", 0);
-		openFileList[0] = new OpenFile(0, 2);
-		openFileList[1] = new OpenFile(1, 3);
+		openFileList[0] = Open("stdin", 2);
+		openFileList[1] = Open("stdout", 3);
 	}
 
 	~FileSystem() {
-		for (int i = 0; i < 10; i++) {
-			if (openFileList[i] != NULL) {
-				delete openFileList[i];
-			}
+		for (int i = 1; i < 10; i++) {
+			Close(i);
 		}
 		delete[] openFileList;
 	}
@@ -79,9 +77,7 @@ class FileSystem {
 		int fileDescriptor = OpenForReadWrite(name, FALSE);
 
 		if (fileDescriptor == -1) return NULL;
-		int freeBlock = FindFreeBlock();
-		openFileList[freeBlock] = new OpenFile(fileDescriptor);
-		return openFileList[freeBlock];
+		return new OpenFile(fileDescriptor);
 	}
 
 	OpenFile* Open(char *name, int type) {
@@ -93,9 +89,7 @@ class FileSystem {
 		}
 
 		if (fileDescriptor == -1) return NULL;
-		int freeBlock = FindFreeBlock();
-		openFileList[freeBlock] = new OpenFile(fileDescriptor, type);
-		return openFileList[freeBlock];
+		return new OpenFile(fileDescriptor, type);
 	}
 
 	bool Close(int id) {

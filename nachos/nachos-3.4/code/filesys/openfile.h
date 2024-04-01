@@ -55,6 +55,8 @@ class OpenFile {
     int Length() { Lseek(file, 0, 2); return Tell(file); }
 
 	int GetID() { return file; }
+	int GetType() { return type; }
+	int GetCurSeekPos() { return currentOffset; }
     
   private:
     int file;
@@ -92,6 +94,8 @@ class OpenFile {
 					// end of file, tell, lseek back 
 
 	int GetID();
+	int GetType();
+	int GetCurSeekPos();
     
   private:
     FileHeader *hdr;			// Header for this file 
