@@ -364,7 +364,7 @@ ExceptionHandler(ExceptionType which)
                         machine->WriteRegister(2, 0);
                     }
 
-                    delete buffer;
+                    delete[] buffer;
                     break;
                 }
                 case SC_PrintInt:
