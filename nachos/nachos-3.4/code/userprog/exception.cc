@@ -234,10 +234,13 @@ ExceptionHandler(ExceptionType which)
                     int len = file->Read(buffer, size); // Lấy số kí tự trong chuỗi đọc ra
                     buffer[len] = '\0'; // Đặt kí tự kết thúc chuỗi
 
-                    // Kiểm tra kết thúc file
+                    // Kiểm tra kết thúc file hoặc kết thúc chuỗi
                     bool isEOF = false;
                     for (int i = 0; i < len; i++) {
-                        if (buffer[i] == EOF) {
+                        if (buffer[i] == '\0') {
+                            len = i + 1;
+                            break;
+                        } else if (buffer[i] == EOF) {
                             len = i + 1;
                             buffer[i] = '\0';
                             isEOF = true;
@@ -245,7 +248,7 @@ ExceptionHandler(ExceptionType which)
                         }
                     }
 
-                    System2User(addr, len + 1, buffer);
+                    System2User(addr, len + 1, buffer); // Chuyển dữ liệu từ Kernel sang User space
 
                     if (isEOF) machine->WriteRegister(2, -2); // Gặp điểm kết thúc file
                     else machine->WriteRegister(2, len); // Không gặp điểm kết thúc file thì in ra số kí tự đọc được
