@@ -3,8 +3,9 @@
 int main() {
     //// Khai báo
     int i = 0, j = 0, k = 0; // Biến đếm
-    char *header, *endLine, *cur, *space1, *space2, *space3, *num;
+    char *header = "Dec  Char  ", *endLine = '\n', *cur, *space1 = "   ", *space2 = "  ", *space3 = "     ", *num;
     char temp[4];
+    num = &temp;
     OpenFileId asciiFile; // Con trỏ file
 
     //// Nội dung chương trình
@@ -17,13 +18,11 @@ int main() {
     else {
         // In header ra màn hình và ghi header vào file ascii.txt
         for (i; i < 8; i++) {
-            *header = "Dec  Char  ";
             PrintString(header);
             Write(header, 12, asciiFile);
         }
 
         // Xuống dòng để kết thúc header
-        *endLine = '\n';
         PrintChar(endLine);
         Write(endLine, 1, asciiFile);
 
@@ -32,7 +31,6 @@ int main() {
             for (j; j < 8; j++) {
                 if (i < 100) { // Trường hợp dạng decimal có 2 chữ số
                     // Chuyển i từ kiểu int sang kiểu char
-                    num = &temp;
                     temp[0] = i / 10 + 48; // Kí tự hàng chục
                     temp[1] = i % 10 + 48; // Kí tự hàng đơn vị
                     temp[2] = '\0';
@@ -43,7 +41,6 @@ int main() {
                     Write(num, 2, asciiFile); 
                     
                     // In khoảng trắng sau dạng decimal
-                    *space1 = "   ";
                     PrintString(space1);
                     Write(space1, 3, asciiFile);
                 }
@@ -60,7 +57,6 @@ int main() {
                     Write(num, 3, asciiFile);
 
                     // In khoảng trắng sau dạng decimal
-                    *space2 = "  ";
                     PrintString(space2);
                     Write(space2, 2, asciiFile);
                 }
@@ -71,7 +67,6 @@ int main() {
                 Write(cur, 1, asciiFile);
 
                 // In khoảng trắng sau dạng char
-                *space3 = "     ";
                 PrintString(space3);
                 Write(space3, 5, asciiFile);
             }
