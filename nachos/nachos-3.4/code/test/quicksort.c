@@ -1,7 +1,6 @@
 #include "syscall.h"
 #include "copyright.h"
-
-#define MAX 20
+#define MAX 99
 
 void swap(int* p1, int* p2)
 {
@@ -46,9 +45,9 @@ int main() {
     char *inputEle = "Elem ";
     char *colon = ": ";
 
-    PrintString("Enter the number of elements: ");
+    PrintString("Enter n: ");
     n = ReadInt();
-    PrintString("Enter the elements:\n");
+    PrintString("Array:\n");
     while (count < n) {
         PrintString(inputEle);
         PrintInt(count);
@@ -60,7 +59,7 @@ int main() {
 
     quickSort(arr, 0, n - 1);
 
-    PrintString("Quick sort successfully\n");
+    PrintString("Quicksort success\n");
 
     if (Create("quicksort.txt") == -1) Halt();
 

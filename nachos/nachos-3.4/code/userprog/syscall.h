@@ -39,7 +39,10 @@
 #define SC_PrintChar	16
 #define SC_ReadString   17
 #define SC_PrintString  18
+
+// New system calls for float
 #define SC_WriteF2File  19
+#define SC_ClearFloat   20
 
 #define byte unsigned char
 
@@ -109,7 +112,10 @@ OpenFileId Open(char *name, int type);
 
 /* Write "size" bytes from "buffer" to the open file. */
 int Write(char *buffer, int charcount, OpenFileId id);
-int WriteF2File(char *buffer, OpenFileId id);
+
+/* Syscal for float */
+int WriteF2File(float* floatNum, OpenFileId id);
+void ClearFloat(float* floatNum);
 
 /* Read "size" bytes from the open file into "buffer".  
  * Return the number of bytes actually read -- if the open file isn't
@@ -129,10 +135,10 @@ int ReadInt();
 void PrintInt(int number);
 
 /* Read a float from the input console */
-void ReadFloat(char *buffer, int length);
+float* ReadFloat();
 
 /* Print a float to the output console */
-void PrintFloat(char *buffer);
+void PrintFloat(float* number);
 
 /* Read a character from the input console */
 char ReadChar();

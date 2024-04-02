@@ -5,8 +5,9 @@ int main() {
     int i = 0, j = 0, k = 0; // Biến đếm
     char *header = "Dec  Char  ", *endLine = '\n', *cur, *space1 = "   ", *space2 = "  ", *space3 = "     ", *num;
     char temp[4];
-    num = &temp;
     OpenFileId asciiFile; // Con trỏ file
+    
+    num = temp;
 
     //// Nội dung chương trình
     Create("ascii.txt"); // Tạo file
@@ -46,7 +47,7 @@ int main() {
                 }
                 else { // Trường hợp dạng decimal có 3 chữ số
                     // Chuyển i từ kiểu int sang kiểu char
-                    num = &temp;
+                    num = temp;
                     temp[0] = 49; // Kí tự hàng trăm: 1
                     temp[1] = (i - 100) / 10 + 48; // Kí tự hàng chục
                     temp[2] = (i - 100) % 10 + 48; // Kí tự hàng đơn vị

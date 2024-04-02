@@ -1,31 +1,6 @@
 #include "syscall.h"
 #include "copyright.h"
-#define MAX 30
-
-float btof(byte* buffer) {
-    int tmp = 0;
-    int i;
-    for (i = 0; i < 4; i++) {
-        buffer[i] = buffer[i] == 0xFF ? 0 : buffer[i];
-    }
-    for (i = 0; i < 4; i++) {
-        tmp |= buffer[i] << (i * 8);
-    }
-    return *(float*)(tmp);
-}
-
-byte* ftob(float num, byte* buffer) {
-    int tmp = *(int*)(&num);
-    int i;
-    for (i = 0; i < 4; i++) {
-        buffer[i] = (tmp >> (i * 8)) & 0xFF;
-    }
-    for (i = 0; i < 4; i++) {
-        buffer[i] = buffer[i] == 0 ? 0xFF : buffer[i];
-    }
-    buffer[4] = '\0';
-    return buffer;
-}
+#define MAX 99
 
 void merge(int arr[], int start, int mid, int end)
 {
@@ -69,30 +44,29 @@ void mergeSort(int arr[], int l, int r)
 }
 
 int main() {
-    float arr[MAX];
+    float* arr[MAX];
     int n;
     int count = 0;
     OpenFileId output;
     char *inputEle = "Elem ";
     char *colon = ": ";
-    char buffer[5];
+    char *space = " ";
 
-    PrintString("Enter the number of elements: ");
+    PrintString("Enter n: ");
     n = ReadInt();
-    PrintString("Enter the elements:\n");
+    PrintString("Array:\n");
     while (count < n) {
         PrintString(inputEle);
         PrintInt(count);
         PrintString(colon);
-        ReadFloat((char*)buffer, 5);
-        arr[count] = btof((byte*)buffer);
+        arr[count] = ReadFloat();
         count++;
     }
     count = 0;
 
     mergeSort(arr, 0, n - 1);
 
-    PrintString("Merge sort successfully!\n");
+    PrintString("Mergesort success\n");
 
     if (Create("mergesort.txt") == -1) Halt();
 
@@ -104,12 +78,17 @@ int main() {
     PrintString("Opening file mergesort.txt successfully\n");
 
     while (count++ < n) {
-        WriteF2File((char*)ftob(arr[count], (byte*)buffer), output);
+        WriteF2File(arr[count - 1], output);
+        Write(space, 1, output);
     }
 
     PrintString("Write to file mergesort.txt successfully\n");
 
     Close(output);
+
+    for (count = 0; count < n; count++) {
+        ClearFloat(arr[count]);
+    }
 
     Halt();
 }

@@ -114,6 +114,14 @@ WriteF2File:
 	j	$31
 	.end WriteF2File
 
+	.globl ClearFloat
+	.ent	ClearFloat
+ClearFloat:
+	addiu $2,$0,SC_ClearFloat
+	syscall
+	j	$31
+	.end ClearFloat
+
 	.globl Close
 	.ent	Close
 Close:
