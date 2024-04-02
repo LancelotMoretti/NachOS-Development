@@ -1,39 +1,47 @@
 #include "syscall.h"
 #include "copyright.h"
+
 #define MAX 99
 
-void swap(int* p1, int* p2)
-{
-    *p1 += *p2;
-    *p2 = *p1 - *p2;
-    *p1 -= *p2;
-}
+int quicksort(int *arr, int n) {
+    int piv, beg[MAX], end[MAX];
+    int i = 0, L, R;
+    int totalShifting = 0;
 
-int partition(int arr[], int low, int high)
-{
-    int pivot = arr[high];
-    int i = (low - 1);
-    int j = low;
-
-    while (j++ <= high) {
-        if (arr[j] < pivot) {
-            i++;
-            swap(&arr[i], &arr[j]);
+    beg[0] = 0;
+    end[0] = n;
+    while (i >= 0) {
+        totalShifting++;
+        L = beg[i];
+        R = end[i] - 1;
+        if (L < R) {
+            piv = arr[L];
+            if (i == MAX - 1)
+                return -1;
+            while (L < R) {
+                while (arr[R] >= piv && L < R)
+                    R--;
+                if (L < R)
+                    arr[L++] = arr[R];
+                while (arr[L] <= piv && L < R)
+                    L++;
+                if (L < R)
+                    arr[R--] = arr[L];
+            }
+            arr[L] = piv;
+            beg[i + 1] = L + 1;
+            end[i + 1] = end[i];
+            end[i++] = L;
+        } else {
+            i--;
         }
     }
-    swap(&arr[i + 1], &arr[high]);
-    return (i + 1);
-}
 
-// The Quicksort function Implement
+    PrintString("Total shifting: ");
+    PrintInt(totalShifting);
+    PrintString("\n");
 
-void quickSort(int arr[], int low, int high)
-{
-    if (low < high) {
-        int pi = partition(arr, low, high);
-        quickSort(arr, low, pi - 1);
-        quickSort(arr, pi + 1, high);
-    }
+    return 0;
 }
 
 int main() {
@@ -41,13 +49,13 @@ int main() {
     int n;
     int count;
     OpenFileId output;
-    char buffer[12];
-    char *inputEle = "Elem ";
+    char buffer[20];
+    char *inputEle = "Element ";
     char *colon = ": ";
 
-    PrintString("Enter n: ");
+    PrintString("Enter the number of elements: ");
     n = ReadInt();
-    PrintString("Array:\n");
+    PrintString("Enter the elements:\n");
     while (count < n) {
         PrintString(inputEle);
         PrintInt(count);
@@ -57,54 +65,60 @@ int main() {
     }
     count = 0;
 
-    quickSort(arr, 0, n - 1);
+    quicksort(arr, n);
 
-    PrintString("Quicksort success\n");
+    PrintString("Quick sort successfully\n");
 
-    if (Create("quicksort.txt") == -1) Halt();
+    if (Create("quicksort.txt") == -1) {
+        PrintString("Error creating file\n");
+        Halt();
+    }
 
     PrintString("Creating file quicksort.txt successfully\n");
 
     output = Open("quicksort.txt", 0);
-    if (output == -1) Halt();
+    if (output == -1) {
+        PrintString("Error opening file\n");
+        Halt();
+    }
 
     PrintString("Opening file quicksort.txt successfully\n");
 
     while (count < n) {
-        int length = 0;
+        int size = 0;
         int tmp = arr[count];
         int isNeg = 0;
         int i = 0;
         char* strBuffer = buffer;
 
         if (tmp < 0) {
-            length++;
+            size++;
             strBuffer[0] = '-';
             isNeg = 1;
             tmp = -tmp;
         }
         else if (tmp == 0) {
-            length++;
+            size++;
             strBuffer[0] = '0';
         }
 
         while (tmp > 0) {
-            length++;
+            size++;
             tmp /= 10;
         }
 
         tmp = arr[count];
-        i = length + isNeg - 1;
+        i = size + isNeg - 1;
 
         while (i >= isNeg && tmp > 0) {
             strBuffer[i--] = (tmp % 10) + '0';
             tmp /= 10;
         }
 
-        if (count != n - 1) strBuffer[length++] = ' ';
-        strBuffer[length] = '\0';
+        if (count != n - 1) strBuffer[size++] = ' ';
+        strBuffer[size] = '\0';
 
-        Write(strBuffer, length, output);
+        Write(strBuffer, size, output);
         count++;
     }
     count = 0;

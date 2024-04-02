@@ -32,14 +32,14 @@ void merge(int arr[], int start, int mid, int end)
     }
 }
 
-void mergeSort(int arr[], int l, int r)
+void mergeSort(int arr[], int left, int right)
 {
-    int m;
-    if (l < r) {
-        m = l + (r - l) / 2;
-        mergeSort(arr, l, m);
-        mergeSort(arr, m + 1, r);
-        merge(arr, l, m, r);
+    int mid;
+    if (left < right) {
+        mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
     }
 }
 

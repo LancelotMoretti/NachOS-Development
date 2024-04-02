@@ -77,7 +77,7 @@ char* User2System(int virtAddr, int limit) {
 }
 
 // System call: copy string from System memory to User memory
-int System2User(int virtAddr, int len, char* buffer, bool isFloat = false) {
+int System2User(int virtAddr, int len, char* buffer) {
     if (len < 0) return -1;
     if (len == 0) return len;
     int i = 0;
@@ -86,7 +86,7 @@ int System2User(int virtAddr, int len, char* buffer, bool isFloat = false) {
         oneChar = (int) buffer[i];
         machine->WriteMem(virtAddr + i, 1, oneChar);
         i++;
-    } while (i < len && (oneChar != 0 || isFloat));
+    } while (i < len && oneChar != 0);
     return i;
 }
 
