@@ -28,6 +28,114 @@
 #define MaxFileLength 32 // Chiều dài tên file tối đa
 #define MaxString 256 // Chiều dài chuỗi tối đa
 
+// System call: float to string
+char* ftoa(float num, int *length) {
+    char *buffer = new char[41];
+    *length = num <= 0 ? 1 : 0;
+    float tmp = num < 0 ? -num : num;
+    int decimalPart = 0;
+    int isNeg = tmp < 0 ? 1 : 0;
+    int i = 0;
+
+    buffer[0] = tmp < 0 ? '-' : '0';
+
+    while (1) {
+        tmp += tmp > 3.4e+2 ? -3.4e+3 : 3.4e+1;
+        if (tmp <= 3.4e2) {
+            decimalPart = (int)(tmp * 10000000) % 10000000;
+            break;
+        }
+    }
+
+    // Get the natural part
+    num -= (float)decimalPart / 10000000.0;
+    while (num > 0) {
+        (*length)++;
+        num /= 10;
+    }
+    num = tmp;
+    i = (*length) + isNeg - 1;
+    while (i >= isNeg) {
+        buffer[i--] = ((int)num % 10) + '0';
+        num /= 10;
+    }
+
+    // Get the decimal part
+    buffer[(*length)++] = '.';
+    i = 7;
+    while (i > 0) {
+        buffer[(*length) + (i--)] = (decimalPart % 10) + '0';
+        decimalPart /= 10;
+    }
+    (*length) += 8;
+    buffer[(*length)++] = ' ';
+    buffer[(*length)] = '\0';
+
+    return buffer;
+}
+
+char* ftob(float num) {
+    char *buffer = new char[5];
+    int tmp = reinterpret_cast<int&>(num);
+    for (int i = 0; i < 4; i++) {
+        buffer[i] = (tmp >> (i * 8)) & 0xFF;
+    }
+    for (int i = 0; i < 4; i++) {
+        buffer[i] = buffer[i] == 0 ? 0xFF : buffer[i];
+    }
+    buffer[4] = '\0';
+    return buffer;
+}
+
+float btof(byte* buffer) {
+    int tmp = 0;
+    for (int i = 0; i < 4; i++) {
+        buffer[i] = buffer[i] == 0xFF ? 0 : buffer[i];
+    }
+    for (int i = 0; i < 4; i++) {
+        tmp |= buffer[i] << (i * 8);
+    }
+    return reinterpret_cast<float&>(tmp);
+}
+
+float atof(char* buffer, int numOfChars) {
+    if (numOfChars <= 0) return 0;
+
+    bool encounteredDot = false;
+    int decimalPart = 0;
+    float number = 0;
+    short multiplier = 1;
+
+    for (int i = 0; i < numOfChars; i++) {
+        if (buffer[i] == '.') {
+            encounteredDot = true;
+            continue;
+        }
+
+        if (i == 0 && buffer[i] == '-') {
+            multiplier = -1;
+            continue;
+        }
+        else if (i == 0 && buffer[i] == '+') {
+            continue;
+        }
+
+        if (encounteredDot) {
+            decimalPart = decimalPart * 10 + (buffer[i] - 48);
+        }
+        else {
+            number = number * 10 + (buffer[i] - 48);
+        }
+    }
+
+    for (int i = 0; i < 7; i++) {
+        decimalPart *= 10;
+    }
+    number += (float)decimalPart / 100000000;
+
+    return number * multiplier;
+}
+
 // System call: copy string from User memory to System memory
 char* User2System(int virtAddr, int limit) {
     int i; // index
@@ -59,7 +167,7 @@ int System2User(int virtAddr, int len, char* buffer) {
         oneChar = (int) buffer[i];
         machine->WriteMem(virtAddr + i, 1, oneChar);
         i++;
-    } while (i < len && oneChar != 0);
+    } while (i < len && (oneChar != 0));
     return i;
 }
 
@@ -318,6 +426,47 @@ ExceptionHandler(ExceptionType which)
                     delete[] buffer;
                     break;
                 }
+                case SC_WriteF2File:
+                {
+                    DEBUG('a', "\n SC_Write call ...");
+                    DEBUG('a', "\n Reading virtual address of filename");
+                    int addr = machine->ReadRegister(4); // Lấy địa chỉ lưu bộ đệm
+                    DEBUG ('a', "\n Reading size of buffer.");
+                    int length = 0; // Lấy kích cỡ bộ đệm
+                    DEBUG ('a', "\n Reading file ID.");
+                    int fID = machine->ReadRegister(5); // Lấy tham số id của file
+                    char *tmp = User2System(addr, MaxString); // chuyển dữ liệu từ User space sang Kernel space
+                    float number = btof((byte*)tmp);
+
+                    if (fID < 2 || fID > 9) {
+                        printf("\n Invalid file id");
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
+
+                    char *buffer = ftoa(number, &length); // chuyển dữ liệu bộ đệm từ User space sang Kernel space
+
+                    OpenFile* file = fileSystem->openFileList[fID]; // Tạo biến con trỏ đọc file
+                    if (file == NULL) {
+                        printf("\n Error writing file with id %d", fID);
+                        DEBUG('a', "\n Error writing file with id %d", fID);
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
+
+                    if (file->GetID() == 1) { // File chỉ đọc 
+                        printf("\n This is a read-only file, can not write!");
+                        DEBUG('a', "\n This is a read-only file, can not write!");
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
+
+                    int len = file->Write(buffer, length); // Ghi buffer vào file
+                    if (len != length - 1) machine->WriteRegister(2, -2);
+                    else machine->WriteRegister(2, len);
+                    delete[] buffer;
+                    break;
+                }
                 case SC_ReadInt:
                 {
                     char *buffer = new char[12];
@@ -404,140 +553,61 @@ ExceptionHandler(ExceptionType which)
                 }
                 case SC_ReadFloat:
                 {
-                    char *buffer = new char[41];
-                    bool dotEncountered = false;
-                    int decimalPart = 0;
-                    int maxDecimalPart = 7;
-                    short multiplier = 1;
-                    float number = 0;
                     DEBUG('a', "\n SC_ReadFloat call ...");
+                    DEBUG('a', "\n Reading buffer from console ...");
+                    int addr = machine->ReadRegister(4); // Lấy địa chỉ lưu bộ đệm
+                    int len = machine->ReadRegister(5); // Lấy kích thước là tham số truyền vào hàm
+
+                    char *buffer = new char[41];
+                    char *tmp = NULL;
+                    float number;
 
                     DEBUG('a', "\n Synching number from console ...");
                     // Đọc tối đa 40 kí tự
                     int numOfChars = gSynchConsole->Read(buffer, 40);
 
-                    if (numOfChars == 40 && buffer[0] > 3 && buffer[1] > 4 && buffer[2] > 0) {
+                    if (numOfChars == 40 && buffer[0] > '3' && buffer[1] > '4' && buffer[2] > '0') {
                         printf("\n Invalid number");
                         DEBUG('a', "\n Invalid number");
-                        machine->WriteRegister(2, 0);
+                        break;
                     }
                     
                     // Nếu có kí tự đọc được
                     if (numOfChars > 0) {
-                        for (int i = 0; i < numOfChars; i++) {
-                            // Nếu gặp dấu chấm
-                            if (buffer[i] == '.') {
-                                dotEncountered = true;
-                                continue;
-                            }
-
-                            // Nếu gặp dấu ở vị trí đầu tiên
-                            if (i == 0 && buffer[i] == '-') {
-                                multiplier = -1;
-                                continue;
-                            }
-                            else if (i == 0 && buffer[i] == '+') {
-                                continue;
-                            }
-                            else if (i == 0 && numOfChars == 40) numOfChars = 39;
-
-                            // Nếu đã đọc đủ phần thập phân
-                            if (maxDecimalPart == 0) {
-                                break;
-                            }
-
-                            if (buffer[i] < 48 || buffer[i] > 57) {
-                                number = 0;
-                                printf("\n Invalid number");
-                                DEBUG('a', "\n Invalid number");
-                                break;
-                            }
-                            else {
-                                if (dotEncountered) {
-                                    decimalPart = decimalPart * 10 + (buffer[i] - 48);
-                                    maxDecimalPart--;
-                                }
-                                else {
-                                    number = number * 10 + (buffer[i] - 48);
-                                }
-                            }
-                        }
-
-                        // Chuyển phần thập phân thành số thực
-                        for (int i = 0; i < maxDecimalPart; i++) {
-                            decimalPart *= 10;
-                        }
-                        number += (float)decimalPart / 10000000;
-
-                        // Ghi kết quả vào thanh ghi r2
-                        number *= multiplier;
-                        machine->WriteRegister(2, *(int*)&number);
+                        number = atof(buffer, numOfChars);
+                        tmp = ftob(number);
                     }
                     else {
                         // Ghi 0 vào thanh ghi r2
                         printf("\n No number read!");
                         DEBUG('a', "\n No number read!");
-                        machine->WriteRegister(2, 0);
+                        number = 0;
+                        tmp = ftob(number);
                     }
 
+                    System2User(addr, 5, tmp);
+                    machine->WriteRegister(2, 4);
+
                     delete[] buffer;
+                    delete[] tmp;
                     break;
                 }
                 case SC_PrintFloat:
                 {
-                    char* buffer = new char[41];
-                    int printPos = 40;
-                    int endPos = 33;
                     // Đọc số thực từ thanh ghi r4
-                    int tmpI = machine->ReadRegister(4);
-                    float number = *((float*)&tmpI);
-                    int decimalPart = 0;
-                    
-                    // Lấy phần thập phân
-                    while (true) {
-                        float temp = number;
-                        if (temp > 3.4e+2) {
-                            temp -= 3.4e+8;
-                        }
-                        else if (temp < -3.4e+2) {
-                            temp += 3.4e+3;
-                        }
-                        else {
-                            decimalPart = (int)(temp * 10000000) % 10000000;
-                            break;
-                        }
-                    }
+                    int length = 0;
 
-                    number -= (float)decimalPart / 10000000;
-
-                    // Chuyển phần thập phân thành chuỗi
-                    for (int i = 0; i < 7; i++) {
-                        if (decimalPart == 0) {
-                            endPos += i;
-                            break;
-                        }
-
-                        buffer[endPos-i-1] = decimalPart % 10 + 48;
-                        decimalPart /= 10;
-                    }
-
-                    // Chuyển phần nguyên thành chuỗi
-                    for (int i = 0; i < endPos; i++) {
-                        if (number == 0) {
-                            buffer[endPos-i-1] = 48;
-                            break;
-                        }
-                        else {
-                            buffer[endPos-i-1] = (int)number % 10 + 48;
-                            number /= 10;
-                            printPos = endPos-i-1; // Lưu lại vị trí đọc
-                        }
-                    }
+                    int addr = machine->ReadRegister(4); // Lấy địa chỉ lưu bộ đệm
+                    char *tmp = User2System(addr, MaxString); // chuyển dữ liệu từ User space sang Kernel space
+                    float number = btof((byte*)tmp);
+                    char *buffer = ftoa(number, &length);
 
                     // In chuỗi ra màn hình bắt đầu từ vị trí đọc
-                    gSynchConsole->Write(buffer + printPos, endPos - printPos);
+                    int count = gSynchConsole->Write(buffer, length);
+                    machine->WriteRegister(2, count);
 
                     delete[] buffer;
+                    delete[] tmp;
                     break;
                 }
                 case SC_ReadChar:

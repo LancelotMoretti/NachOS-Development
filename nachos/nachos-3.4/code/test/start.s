@@ -106,6 +106,14 @@ Write:
 	j	$31
 	.end Write
 
+	.globl WriteF2File
+	.ent	WriteF2File
+WriteF2File:
+	addiu $2,$0,SC_WriteF2File
+	syscall
+	j	$31
+	.end WriteF2File
+
 	.globl Close
 	.ent	Close
 Close:

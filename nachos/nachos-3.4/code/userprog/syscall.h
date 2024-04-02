@@ -29,6 +29,8 @@
 #define SC_Close	    8
 #define SC_Fork		    9
 #define SC_Yield	    10
+
+// New system calls
 #define SC_ReadInt	    11
 #define SC_PrintInt     12
 #define SC_ReadFloat	13
@@ -37,6 +39,9 @@
 #define SC_PrintChar	16
 #define SC_ReadString   17
 #define SC_PrintString  18
+#define SC_WriteF2File  19
+
+#define byte unsigned char
 
 #ifndef IN_ASM
 
@@ -104,6 +109,7 @@ OpenFileId Open(char *name, int type);
 
 /* Write "size" bytes from "buffer" to the open file. */
 int Write(char *buffer, int charcount, OpenFileId id);
+int WriteF2File(char *buffer, OpenFileId id);
 
 /* Read "size" bytes from the open file into "buffer".  
  * Return the number of bytes actually read -- if the open file isn't
@@ -123,10 +129,10 @@ int ReadInt();
 void PrintInt(int number);
 
 /* Read a float from the input console */
-float ReadFloat();
+void ReadFloat(char *buffer, int length);
 
 /* Print a float to the output console */
-void PrintFloat(float number);
+void PrintFloat(char *buffer);
 
 /* Read a character from the input console */
 char ReadChar();

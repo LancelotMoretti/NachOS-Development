@@ -2,12 +2,8 @@
 #include "copyright.h"
 
 int main() {
-    int n;
-    char c;
-    n = ReadInt();
-    c = ReadChar();
-    PrintInt(n);
-    PrintChar(c);
-
+    char buffer[10];
+    ReadString(buffer, 10);
+    PrintString(buffer);
     Halt();
 }
