@@ -23,7 +23,7 @@ int main() {
         }
 
         // Xuống dòng để kết thúc header
-        PrintChar(endLine);
+        PrintChar(*endLine);
         Write(endLine, 1, asciiFile);
 
         // In nội dung bảng ascii ra màn hình và ghi vào file ascii.txt
@@ -62,8 +62,8 @@ int main() {
                 }
 
                 // In dạng char
-                *cur = i;
-                PrintChar(cur);
+                *cur = (char)i;
+                PrintChar(*cur);
                 Write(cur, 1, asciiFile);
 
                 // In khoảng trắng sau dạng char
@@ -72,7 +72,7 @@ int main() {
             }
 
             // Xuống dòng
-            PrintChar(endLine);
+            PrintChar(*endLine);
             Write(endLine, 1, asciiFile);
         }
     }
