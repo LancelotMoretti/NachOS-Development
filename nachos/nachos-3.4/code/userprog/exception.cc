@@ -338,7 +338,7 @@ ExceptionHandler(ExceptionType which)
                         break;
                     }
 
-                    if (file->GetID() == 1) { // File chỉ đọc 
+                    if (file->GetType() == 1) { // File chỉ đọc 
                         printf("\n This is a read-only file, can not write!");
                         DEBUG('a', "\n This is a read-only file, can not write!");
                         machine->WriteRegister(2, -1);
@@ -424,7 +424,6 @@ ExceptionHandler(ExceptionType which)
 
                     // Nếu có kí tự đọc được
                     if (numOfChars > 0) {
-                        // Chuyển kí tự thành số
                         for (int i = 0; i < numOfChars; i++) {
                             // Nếu gặp dấu ở vị trí đầu tiên
                             if (i == 0 && buffer[i] == '-') {
