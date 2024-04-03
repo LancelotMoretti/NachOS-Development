@@ -1,5 +1,4 @@
 #include "syscall.h"
-#include "copyright.h"
 
 #define MAX 99
 

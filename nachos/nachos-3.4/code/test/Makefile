@@ -77,12 +77,6 @@ help.o: help.c
 help: help.o start.o
 	$(LD) $(LDFLAGS) start.o help.o -o help.coff
 	../bin/coff2noff help.coff help
-# 
-# test.o: test.c
-# 	$(CC) $(CFLAGS) -c test.c
-# test: test.o start.o
-# 	$(LD) $(LDFLAGS) start.o test.o -o test.coff
-# 	../bin/coff2noff test.coff test
 
 mergesort.o: mergesort.c
 	$(CC) $(CFLAGS) -c mergesort.c
@@ -101,3 +95,9 @@ ascii.o: ascii.c
 ascii: ascii.o start.o
 	$(LD) $(LDFLAGS) start.o ascii.o -o ascii.coff
 	../bin/coff2noff ascii.coff ascii
+# 
+# test.o: test.c
+# 	$(CC) $(CFLAGS) -c test.c
+# test: test.o start.o
+# 	$(LD) $(LDFLAGS) start.o test.o -o test.coff
+# 	../bin/coff2noff test.coff test

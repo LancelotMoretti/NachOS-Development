@@ -138,4 +138,4 @@
 - [ ] Further analyze the role of the functions
 - [ ] Analyze how make command works
 - [x] help.c
-- [ ] ascii.c
+- [x] ascii.c

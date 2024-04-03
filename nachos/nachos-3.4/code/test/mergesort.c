@@ -1,5 +1,4 @@
 #include "syscall.h"
-#include "copyright.h"
 #define MAX 99
 
 void merge(float* arr[], int start, int mid, int end)
@@ -8,10 +7,6 @@ void merge(float* arr[], int start, int mid, int end)
     float* value;
     int index;
 
-    // if (arr[mid] <= arr[start2]) {
-    //     return;
-    // }
-
     if (CompareFloat(arr[mid], arr[start2]) <= 0) {
         return;
     }
@@ -19,7 +14,6 @@ void merge(float* arr[], int start, int mid, int end)
     while (start <= mid && start2 <= end) {
 
         if (CompareFloat(arr[start], arr[start2]) <= 0) {
-        // if (arr[start] <= arr[start2]) {
             start++;
         }
         else {
