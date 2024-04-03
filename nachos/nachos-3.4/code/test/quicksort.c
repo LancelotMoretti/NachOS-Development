@@ -55,6 +55,10 @@ int main() {
 
     PrintString("Enter the number of elements: ");
     n = ReadInt();
+    if (n <= 0 || n > MAX) {
+        PrintString("Invalid number of elements\n");
+        Halt();
+    }
     PrintString("Enter the elements:\n");
     while (count < n) {
         PrintString(inputEle);

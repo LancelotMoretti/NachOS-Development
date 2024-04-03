@@ -59,6 +59,10 @@ int main() {
 
     PrintString("Enter n: ");
     n = ReadInt();
+    if (n <= 0 || n > MAX) {
+        PrintString("Invalid number of elements\n");
+        Halt();
+    }
     PrintString("Array:\n");
     while (count < n) {
         PrintString(inputEle);
