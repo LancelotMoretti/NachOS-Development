@@ -238,8 +238,13 @@ ExceptionHandler(ExceptionType which)
                         else if (type == 2) { // stdin
                             machine->WriteRegister(2, 0);
                         }
-                        else {
+                        else if (type == 3) { // stdout
                             machine->WriteRegister(2, 1);
+                        }
+                        else {
+                            printf("\n Invalid type of file");
+                            DEBUG('a', "\n Invalid type of file");
+                            machine->WriteRegister(2, -1);
                         }
 
                         delete[] filename;
@@ -252,12 +257,26 @@ ExceptionHandler(ExceptionType which)
                     DEBUG('a', "\n Reading file id");
                     // Lấy tham số id của file từ thanh ghi r4
                     int fid = machine->ReadRegister(4);
+                    
+                    // Kiểm tra id file
+                    if (fid < 2 || fid > 9) {
+                        printf("\n Invalid file id");
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
+                    if (fileSystem->openFileList[fid] == NULL) {
+                        printf("\n Error close file with id %d", fid);
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
+
                     // Đóng file
                     if (!fileSystem->Close(fid)) {
                         printf("\n Error close file with id %d", fid);
                         machine->WriteRegister(2, -1);
                         break;
                     }
+                    fileSystem->openFileList[fid] = NULL;
                     // Trả về 0 nếu đóng file thành công
                     machine->WriteRegister(2, 0);
                     break;
