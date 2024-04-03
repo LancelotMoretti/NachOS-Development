@@ -217,7 +217,7 @@ Các hàm
 - `void Console::PutChar(char ch)`: ghi ký tự lên màn hình và lên lịch cho interrupt
 
 ## synchcons.h và synchcons.cc
-> Chưa hoàn thiện
+
 ### Thông tin
 
 Các hàm truy xuất giữa console và người dùng trong Nachos. Được định nghĩa ở lớp `SynchConsole` trong file synchcons.h.

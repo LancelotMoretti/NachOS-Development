@@ -106,7 +106,7 @@
 ## State 3 (30/03/2024 - 03/04/2024)
 
 ### Đào Việt Hoàng
-- [ ] Conclude the role of functions in:
+- [x] Conclude the role of functions in:
     - [x] progtest.cc
     - [x] syscall.h
     - [x] exception.cc
