@@ -291,6 +291,18 @@ ExceptionHandler(ExceptionType which)
                     DEBUG ('a', "\n Reading file ID.");
                     int fID = machine->ReadRegister(6); // Lấy tham số id của file
 
+                    if (fID == 0) {
+                        char *buffer = new char [size + 1]; // Khai báo một chuỗi có độ dài là kích thước tối đa + 1
+                        int size = gSynchConsole->Read(buffer, size); // Lấy số kí tự trong chuỗi nhập vào
+                        buffer[size] = '\0'; // Đặt kí tự kết thúc chuỗi
+
+                        System2User(addr, size + 1, buffer);
+                        machine->WriteRegister(2, size);
+
+                        delete []buffer;
+                        break;
+                    }
+
                     if (fID < 2 || fID > 9) {
                         printf("\n Invalid file id");
                         machine->WriteRegister(2, -1);
@@ -340,6 +352,17 @@ ExceptionHandler(ExceptionType which)
                     int size = machine->ReadRegister(5); // Lấy kích cỡ bộ đệm
                     DEBUG ('a', "\n Reading file ID.");
                     int fID = machine->ReadRegister(6); // Lấy tham số id của file
+
+                    if (fID == 1) {
+                        char *buffer = User2System(virtAddr, MaxString); // chuyển dữ liệu bộ đệm từ User space sang Kernel space
+                        int index = 0, count = 0;
+                        while (buffer[index] != '\0' && index < MaxString) {
+                            count += gSynchConsole->Write(buffer + index++, 1); // In một kí tự ở vị trí thứ i trong chuỗi
+                        }
+                        machine->WriteRegister(2, count); // Ghi số kí tự in được vào thanh ghi r2
+                        delete []buffer;
+                        break;
+                    }
 
                     if (fID < 2 || fID > 9) {
                         printf("\n Invalid file id");
