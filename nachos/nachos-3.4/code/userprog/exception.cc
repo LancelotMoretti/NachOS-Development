@@ -257,7 +257,7 @@ ExceptionHandler(ExceptionType which)
                     DEBUG('a', "\n Reading file id");
                     // Lấy tham số id của file từ thanh ghi r4
                     int fid = machine->ReadRegister(4);
-                    
+
                     // Kiểm tra id file
                     if (fid < 2 || fid > 9) {
                         printf("\n Invalid file id");
@@ -347,8 +347,6 @@ ExceptionHandler(ExceptionType which)
                         break;
                     }
 
-                    char *buffer = User2System(virtAddr, MaxString); // chuyển dữ liệu bộ đệm từ User space sang Kernel space
-
                     OpenFile* file = fileSystem->openFileList[fID]; // Tạo biến con trỏ đọc file
                     if (file == NULL) {
                         printf("\n Error writing file with id %d", fID);
@@ -363,6 +361,8 @@ ExceptionHandler(ExceptionType which)
                         machine->WriteRegister(2, -1);
                         break;
                     }
+
+                    char *buffer = User2System(virtAddr, MaxString); // chuyển dữ liệu bộ đệm từ User space sang Kernel space
 
                     int len = file->Write(buffer, size); // Ghi buffer vào file
                     if (len != size - 1) machine->WriteRegister(2, -2);
