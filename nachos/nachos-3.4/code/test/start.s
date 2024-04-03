@@ -114,6 +114,14 @@ WriteF2File:
 	j	$31
 	.end WriteF2File
 
+	.globl CompareFloat
+	.ent	CompareFloat
+CompareFloat:
+	addiu $2,$0,SC_CompareFloat
+	syscall
+	j	$31
+	.end CompareFloat
+
 	.globl ClearFloat
 	.ent	ClearFloat
 ClearFloat:

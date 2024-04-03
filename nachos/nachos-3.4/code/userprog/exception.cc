@@ -383,6 +383,19 @@ ExceptionHandler(ExceptionType which)
                     delete[] buffer;
                     break;
                 }
+                case SC_CompareFloat:
+                {
+                    DEBUG('a', "\n SC_CompareFloat call ...");
+                    DEBUG('a', "\n Reading address of float number");
+                    float* first = (float*)machine->ReadRegister(4);
+                    float* second = (float*)machine->ReadRegister(5);
+
+                    if (*first > *second) machine->WriteRegister(2, 1);
+                    else if (*first == *second) machine->WriteRegister(2, 0);
+                    else machine->WriteRegister(2, -1);
+
+                    break;
+                }
                 case SC_ClearFloat:
                 {
                     DEBUG('a', "\n SC_ClearFloat call ...");

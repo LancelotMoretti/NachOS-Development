@@ -42,7 +42,8 @@
 
 // New system calls for float
 #define SC_WriteF2File  19
-#define SC_ClearFloat   20
+#define SC_CompareFloat 20
+#define SC_ClearFloat   21
 
 #define byte unsigned char
 
@@ -115,6 +116,7 @@ int Write(char *buffer, int charcount, OpenFileId id);
 
 /* Syscal for float */
 int WriteF2File(float* floatNum, OpenFileId id);
+int CompareFloat(float* first, float* second);
 void ClearFloat(float* floatNum);
 
 /* Read "size" bytes from the open file into "buffer".  

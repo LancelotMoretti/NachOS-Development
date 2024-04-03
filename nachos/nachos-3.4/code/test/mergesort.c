@@ -2,19 +2,24 @@
 #include "copyright.h"
 #define MAX 99
 
-void merge(int arr[], int start, int mid, int end)
+void merge(float* arr[], int start, int mid, int end)
 {
     int start2 = mid + 1;
-    int value;
+    float* value;
     int index;
 
-    if (arr[mid] <= arr[start2]) {
+    // if (arr[mid] <= arr[start2]) {
+    //     return;
+    // }
+
+    if (CompareFloat(arr[mid], arr[start2]) <= 0) {
         return;
     }
 
     while (start <= mid && start2 <= end) {
 
-        if (arr[start] <= arr[start2]) {
+        if (CompareFloat(arr[start], arr[start2]) <= 0) {
+        // if (arr[start] <= arr[start2]) {
             start++;
         }
         else {
@@ -32,7 +37,7 @@ void merge(int arr[], int start, int mid, int end)
     }
 }
 
-void mergeSort(int arr[], int left, int right)
+void mergeSort(float* arr[], int left, int right)
 {
     int mid;
     if (left < right) {
@@ -79,7 +84,7 @@ int main() {
 
     while (count++ < n) {
         WriteF2File(arr[count - 1], output);
-        Write(space, 1, output);
+        if (count < n) Write(space, 1, output);
     }
 
     PrintString("Write to file mergesort.txt successfully\n");
