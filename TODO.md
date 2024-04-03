@@ -125,17 +125,17 @@
 - [x] mergesort.c
 
 ### Đặng Thanh Tú
-- [ ] Conclude the role of functions in folder test:
-    - [ ] sort.c
-    - [ ] matmult.c
-    - [ ] start.c
-    - [ ] start.s
-    - [ ] shell.c
-    - [ ] halt.c
-    - [ ] createfile.c
+- [x] Conclude the role of functions in folder test:
+    - [x] sort.c
+    - [x] matmult.c
+    - [x] start.c
+    - [x] start.s
+    - [x] shell.c
+    - [x] halt.c
+    - [x] createfile.c
 
 ### Đào Ngọc Thiện
 - [ ] Further analyze the role of the functions
 - [ ] Analyze how make command works
-- [ ] help.c
+- [x] help.c
 - [ ] ascii.c

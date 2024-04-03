@@ -91,6 +91,12 @@ int System2User(int virtAddr, int len, char* buffer) {
 }
 
 void IncPCReg() {
+    // // Advance program counters.
+    // registers[PrevPCReg] = registers[PCReg];	// for debugging, in case we
+	// 					// are jumping into lala-land
+    // registers[PCReg] = registers[NextPCReg];
+    // registers[NextPCReg] = pcAfter;
+
     int curPC = machine->ReadRegister(PCReg);
     machine->WriteRegister(PrevPCReg, curPC);
     curPC = machine->ReadRegister(NextPCReg);
