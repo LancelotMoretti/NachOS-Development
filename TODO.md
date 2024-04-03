@@ -121,8 +121,8 @@
 ### Bùi Tá Phát
 - [ ] Further analyze the role of the functions
 - [ ] Analyze how make command works
-- [ ] quicksort.c
-- [ ] mergesort.c
+- [x] quicksort.c
+- [x] mergesort.c
 
 ### Đặng Thanh Tú
 - [ ] Conclude the role of functions in folder test:
