@@ -30,6 +30,7 @@
 //	Thread::Fork.
 //
 //	"threadName" is an arbitrary string, useful for debugging.
+//  "id" is an optional parameter to identify the thread
 //----------------------------------------------------------------------
 
 Thread::Thread(char* threadName)
@@ -38,6 +39,19 @@ Thread::Thread(char* threadName)
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
+    threadID = 0;
+#ifdef USER_PROGRAM
+    space = NULL;
+#endif
+}
+
+Thread::Thread(char* threadName, int id)
+{
+    name = threadName;
+    stackTop = NULL;
+    stack = NULL;
+    status = JUST_CREATED;
+    threadID = id;
 #ifdef USER_PROGRAM
     space = NULL;
 #endif

@@ -15,6 +15,8 @@
 #include "interrupt.h"
 #include "stats.h"
 #include "timer.h"
+#include "ptable.h"
+#include "bitmap.h"
 
 // Initialization and cleanup routines
 extern void Initialize(int argc, char **argv); 	// Initialization,
@@ -24,6 +26,8 @@ extern void Cleanup();				// Cleanup, called when
 
 extern Thread *currentThread;			// the thread holding the CPU
 extern Thread *threadToBeDestroyed;  		// the thread that just finished
+extern PTable *processTab;			// the process table
+extern BitMap *gPhysPageBitMap;			// the physical page bitmap
 extern Scheduler *scheduler;			// the ready list
 extern Interrupt *interrupt;			// interrupt status
 extern Statistics *stats;			// performance metrics
@@ -38,12 +42,17 @@ extern SynchConsole* gSynchConsole;
 
 #ifdef FILESYS_NEEDED 		// FILESYS or FILESYS_STUB 
 #include "filesys.h"
+#include "synch.h"
 extern FileSystem  *fileSystem;
+extern Lock *addrLock;				// the lock for address space
 #endif
 
 #ifdef FILESYS
 #include "synchdisk.h"
 extern SynchDisk   *synchDisk;
+#ifndef FILESYS_NEEDED
+extern Lock *addrLock;				// the lock for address space
+#endif
 #endif
 
 #ifdef NETWORK

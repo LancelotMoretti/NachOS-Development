@@ -13,6 +13,8 @@
 
 Thread *currentThread;			// the thread we are running now
 Thread *threadToBeDestroyed;  		// the thread that just finished
+PTable *processTab;			// the process table
+BitMap *gPhysPageBitMap;			// the physical page bitmap
 Scheduler *scheduler;			// the ready list
 Interrupt *interrupt;			// interrupt status
 Statistics *stats;			// performance metrics
@@ -21,10 +23,14 @@ Timer *timer;				// the hardware timer device,
 
 #ifdef FILESYS_NEEDED
 FileSystem  *fileSystem;
+Lock *addrLock;				// the lock for address space
 #endif
 
 #ifdef FILESYS
 SynchDisk   *synchDisk;
+#ifndef FILESYS_NEEDED
+Lock *addrLock;				// the lock for address space
+#endif
 #endif
 
 #ifdef USER_PROGRAM	// requires either FILESYS or FILESYS_STUB
@@ -134,6 +140,7 @@ Initialize(int argc, char **argv)
     stats = new Statistics();			// collect statistics
     interrupt = new Interrupt;			// start up interrupt handling
     scheduler = new Scheduler();		// initialize the ready queue
+    gPhysPageBitMap = new BitMap(NumPhysPages);	// initialize the physical page bitmap
     if (randomYield)				// start the timer (if needed)
 	timer = new Timer(TimerInterruptHandler, 0, randomYield);
 
@@ -142,7 +149,9 @@ Initialize(int argc, char **argv)
     // We didn't explicitly allocate the current thread we are running in.
     // But if it ever tries to give up the CPU, we better have a Thread
     // object to save its state. 
-    currentThread = new Thread("main");		
+    processTab = new PTable(10);
+    int processID = processTab->ExecUpdate("main");
+    currentThread = new Thread("main", processID);		
     currentThread->setStatus(RUNNING);
 
     interrupt->Enable();
@@ -155,10 +164,14 @@ Initialize(int argc, char **argv)
 
 #ifdef FILESYS
     synchDisk = new SynchDisk("DISK");
+    addrLock = new Lock("addrLock");		// initialize the lock for address space
 #endif
 
 #ifdef FILESYS_NEEDED
     fileSystem = new FileSystem(format);
+#ifndef FILESYS
+    addrLock = new Lock("addrLock");		// initialize the lock for address space
+#endif
 #endif
 
 #ifdef NETWORK
@@ -185,15 +198,22 @@ Cleanup()
 
 #ifdef FILESYS_NEEDED
     delete fileSystem;
+    delete addrLock;
 #endif
 
 #ifdef FILESYS
     delete synchDisk;
+#ifndef FILESYS_NEEDED
+    delete addrLock;
+#endif
 #endif
     
     delete timer;
     delete scheduler;
     delete interrupt;
+    delete processTab;
+    delete gPhysPageBitMap;
+    delete stats;
     
     Exit(0);
 }

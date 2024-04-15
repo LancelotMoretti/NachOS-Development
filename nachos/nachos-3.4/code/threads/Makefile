@@ -110,7 +110,7 @@ system.o: ../threads/system.cc ../threads/copyright.h ../threads/system.h \
   ../machine/translate.h ../machine/disk.h ../userprog/addrspace.h \
   ../filesys/filesys.h ../filesys/openfile.h ../threads/scheduler.h \
   ../threads/list.h ../machine/interrupt.h ../machine/stats.h \
-  ../machine/timer.h
+  ../machine/timer.h ../threads/synch.h
 thread.o: ../threads/thread.cc ../threads/copyright.h ../threads/thread.h \
   ../threads/utility.h ../threads/bool.h ../machine/sysdep.h \
   /usr/lib/gcc-lib/i586-mandrake-linux-gnu/3.2.2/include/stdio.h \
@@ -258,7 +258,7 @@ addrspace.o: ../userprog/addrspace.cc ../threads/copyright.h \
   ../machine/translate.h ../machine/disk.h ../userprog/addrspace.h \
   ../filesys/filesys.h ../filesys/openfile.h ../threads/scheduler.h \
   ../threads/list.h ../machine/interrupt.h ../machine/stats.h \
-  ../machine/timer.h ../bin/noff.h
+  ../machine/timer.h ../bin/noff.h ../threads/system.h
 bitmap.o: ../userprog/bitmap.cc ../threads/copyright.h \
   ../userprog/bitmap.h ../threads/utility.h ../threads/bool.h \
   ../machine/sysdep.h \
