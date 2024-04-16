@@ -45,6 +45,10 @@
 #define SC_CompareFloat 20
 #define SC_ClearFloat   21
 
+// New system calls for semaphore Up and Down
+#define SC_Up           22
+#define SC_Down         23
+
 #define byte unsigned char
 
 #ifndef IN_ASM
