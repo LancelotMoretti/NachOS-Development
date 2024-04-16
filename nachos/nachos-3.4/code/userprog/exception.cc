@@ -640,11 +640,28 @@ ExceptionHandler(ExceptionType which)
                     int addr = machine->ReadRegister(4);
                     char *name = User2System(addr, MaxString); // <-- Read char* name from user space
 
+                    if (name == NULL) {
+                        printf("\n Invalid input: Cannot read semaphore name");
+                        DEBUG('a', "\n Invalid input: Cannot read semaphore name");
+                        machine->WriteRegister(2, -1);
+                        delete[] name;
+                        break;
+                    }
+
                     //Check for semaphore called $name in the list 
-                    for (int i = 0; i < semList.size(); i++) {
-                        if (strcmp(semList[i]->getName, name) == 0) {
-                            semList[i]->V();
-                            machine->WriteRegister(2, 0); // Need review
+                    for (int i = 0; i < semTab.size(); i++) {           // Need review
+                        if (strcmp(semTab[i]->getName, name) == 0) {
+                            int temp = semTab[i]->V();
+
+                            if (temp == -1) {
+                                printf("\n Semaphore is non-existent");
+                                DEBUG('a', "\n Semaphore is non-existent");
+                                machine->WriteRegister(2, -1);
+                                delete []name;
+                                break;
+                            }
+
+                            machine->WriteRegister(2, temp); 
                             delete []name;
                             break;
                         }
@@ -662,11 +679,28 @@ ExceptionHandler(ExceptionType which)
                     int addr = machine->ReadRegister(4);
                     char *name = User2System(addr, MaxString); // <-- Read char* name from user space
 
+                    if (name == NULL) {
+                        printf("\n Invalid input: Cannot read semaphore name");
+                        DEBUG('a', "\n Invalid input: Cannot read semaphore name");
+                        machine->WriteRegister(2, -1);
+                        delete[] name;
+                        break;
+                    }
+
                     //Check for semaphore called $name in the list 
-                    for (int i = 0; i < semList.size(); i++) {
-                        if (strcmp(semList[i]->getName, name) == 0) {
-                            semList[i]->P();
-                            machine->WriteRegister(2, 0); // Need review
+                    for (int i = 0; i < semTab.size(); i++) {           // Need review
+                        if (strcmp(semTab[i]->getName, name) == 0) {
+                            int temp = semTab[i]->P();
+
+                            if (temp == -1) {
+                                printf("\n Semaphore is non-existent");
+                                DEBUG('a', "\n Semaphore is non-existent");
+                                machine->WriteRegister(2, -1);
+                                delete []name;
+                                break;
+                            }
+
+                            machine->WriteRegister(2, temp); 
                             delete []name;
                             break;
                         }
