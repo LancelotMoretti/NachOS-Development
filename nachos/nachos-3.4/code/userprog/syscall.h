@@ -49,6 +49,8 @@
 #define SC_Up           22
 #define SC_Down         23
 
+#define SC_Sleep        24
+
 #define byte unsigned char
 
 #ifndef IN_ASM
@@ -171,6 +173,8 @@ void Fork(void (*func)());
  * or not. 
  */
 void Yield();		
+
+void Sleep();
 
 #endif /* IN_ASM */
 

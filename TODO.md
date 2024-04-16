@@ -15,6 +15,6 @@
 - [x] System call Down
 
 ### Đào Ngọc Thiện
-- [ ] System call Yeild
-- [ ] System call Fork
+- [x] System call Yeild
+- [x] System call Fork
 - [ ] System call Sleep (optional)

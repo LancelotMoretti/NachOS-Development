@@ -758,6 +758,25 @@ ExceptionHandler(ExceptionType which)
                     break;
                 }
                 
+                case SC_Fork:
+                {
+                    VoidFunctionPtr addr = VoidFunctionPtr(machine->ReadRegister(4));
+                    currentThread->Fork(*addr, 0); // arg???
+                    break;
+                }
+
+                case SC_Yield:
+                {
+                    currentThread->Yield();
+                    break;
+                }
+                
+                case SC_Sleep:
+                {
+                    currentThread->Sleep();
+                    break;
+                }
+
                 default:
                     printf("\n Unexpected user mode exception (%d %d) \n", which, type);
                     interrupt->Halt();
