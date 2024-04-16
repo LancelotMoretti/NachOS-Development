@@ -634,6 +634,51 @@ ExceptionHandler(ExceptionType which)
                     delete []buffer;
                     break;
                 }
+
+                case SC_Up:
+                {
+                    int addr = machine->ReadRegister(4);
+                    char *name = User2System(addr, MaxString); // <-- Read char* name from user space
+
+                    //Check for semaphore called $name in the list 
+                    for (int i = 0; i < semList.size(); i++) {
+                        if (strcmp(semList[i]->getName, name) == 0) {
+                            semList[i]->V();
+                            machine->WriteRegister(2, 0); // Need review
+                            delete []name;
+                            break;
+                        }
+                    }
+
+                    //If not return error, else call syscall Signal sem->V()
+                    printf("\n Invalid input: Cannot find similar sempahore with name ", name);
+                    DEBUG('a', "\n Invalid input: Cannot find similar sempahore with name ", name);
+                    delete []name;
+                    break;
+                }
+
+                case SC_Down:
+                {
+                    int addr = machine->ReadRegister(4);
+                    char *name = User2System(addr, MaxString); // <-- Read char* name from user space
+
+                    //Check for semaphore called $name in the list 
+                    for (int i = 0; i < semList.size(); i++) {
+                        if (strcmp(semList[i]->getName, name) == 0) {
+                            semList[i]->P();
+                            machine->WriteRegister(2, 0); // Need review
+                            delete []name;
+                            break;
+                        }
+                    }
+
+                    //If not return error, else call syscall Wait sem->P()
+                    printf("\n Invalid input: Cannot find similar sempahore with name ", name);
+                    DEBUG('a', "\n Invalid input: Cannot find similar sempahore with name ", name);
+                    delete []name;
+                    break;
+                }
+
                 default:
                     printf("\n Unexpected user mode exception (%d %d) \n", which, type);
                     interrupt->Halt();
