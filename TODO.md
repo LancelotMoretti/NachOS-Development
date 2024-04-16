@@ -7,12 +7,12 @@
 - [ ] System call CreateSemaphore
 
 ### Bùi Tá Phát
-- [ ] System call Join
-- [ ] System call Exit
+- [x] System call Join
+- [x] System call Exit
 
 ### Đặng Thanh Tú
-- [ ] System call Up
-- [ ] System call Down
+- [x] System call Up
+- [x] System call Down
 
 ### Đào Ngọc Thiện
 - [ ] System call Yeild

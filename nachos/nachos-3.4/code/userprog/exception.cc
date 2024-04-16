@@ -144,6 +144,7 @@ ExceptionHandler(ExceptionType which)
                     DEBUG('a', "Shutdown, initiated by user program.\n");
                     interrupt->Halt();
                     break;
+                
                 case SC_Create:
                 {
                     int virtAddr;
@@ -182,6 +183,7 @@ ExceptionHandler(ExceptionType which)
                     delete[] filename;
                     break;
                 }
+                
                 case SC_Open:
                 {
                     int virtAddr, type;
@@ -251,6 +253,7 @@ ExceptionHandler(ExceptionType which)
                         break;
                     }
                 }
+                
                 case SC_Close:
                 {
                     DEBUG('a', "\n SC_Close call ...");
@@ -281,6 +284,7 @@ ExceptionHandler(ExceptionType which)
                     machine->WriteRegister(2, 0);
                     break;
                 }
+                
                 case SC_Read:
                 {
                     DEBUG('a', "\n SC_Write call ...");
@@ -343,6 +347,7 @@ ExceptionHandler(ExceptionType which)
                     
                     break;
                 }
+                
                 case SC_Write:
                 {
                     DEBUG('a', "\n SC_Write call ...");
@@ -393,6 +398,7 @@ ExceptionHandler(ExceptionType which)
                     delete[] buffer;
                     break;
                 }
+                
                 case SC_WriteF2File:
                 {
                     DEBUG('a', "\n SC_Write call ...");
@@ -431,6 +437,7 @@ ExceptionHandler(ExceptionType which)
                     delete[] buffer;
                     break;
                 }
+                
                 case SC_CompareFloat:
                 {
                     DEBUG('a', "\n SC_CompareFloat call ...");
@@ -444,6 +451,7 @@ ExceptionHandler(ExceptionType which)
 
                     break;
                 }
+                
                 case SC_ClearFloat:
                 {
                     DEBUG('a', "\n SC_ClearFloat call ...");
@@ -454,6 +462,7 @@ ExceptionHandler(ExceptionType which)
                     }
                     break;
                 }
+                
                 case SC_ReadInt:
                 {
                     char *buffer = new char[12];
@@ -502,6 +511,7 @@ ExceptionHandler(ExceptionType which)
                     delete[] buffer;
                     break;
                 }
+                
                 case SC_PrintInt:
                 {
                     char* buffer = new char[12];
@@ -537,6 +547,7 @@ ExceptionHandler(ExceptionType which)
                     delete[] buffer;
                     break;
                 }
+                
                 case SC_ReadFloat:
                 {
                     char *buffer = new char[MaxString];
@@ -567,6 +578,7 @@ ExceptionHandler(ExceptionType which)
                     delete[] buffer;
                     break;
                 }
+                
                 case SC_PrintFloat:
                 {
                     // Đọc số thực từ thanh ghi r4
@@ -581,6 +593,7 @@ ExceptionHandler(ExceptionType which)
                     delete[] buffer;
                     break;
                 }
+                
                 case SC_ReadChar:
                 {
                     char *buffer = new char [MaxString];
@@ -600,12 +613,14 @@ ExceptionHandler(ExceptionType which)
                     delete []buffer;
                     break;
                 }
+                
                 case SC_PrintChar:
                 {
                     char c = (char)machine->ReadRegister(4); // Lấy kí tự vào biến c
                     gSynchConsole->Write(&c, 1);
                     break;
                 }
+                
                 case SC_ReadString:
                 {
                     int addr = machine->ReadRegister(4); // Lấy địa chỉ buffer
@@ -621,6 +636,7 @@ ExceptionHandler(ExceptionType which)
                     delete []buffer;
                     break;
                 }
+                
                 case SC_PrintString:
                 {
                     int addr = machine->ReadRegister(4);
@@ -713,6 +729,35 @@ ExceptionHandler(ExceptionType which)
                     break;
                 }
 
+                case SC_Join:
+                {
+                    int pid = machine->ReadRegister(4);
+                    if (pid < 0 || pid > 9) {
+                        printf("\n Invalid input: Cannot find process with pid ", pid);
+                        DEBUG('a', "\n Invalid input: Cannot find process with pid ", pid);
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
+
+                    if (!processTab->IsExist(pid)) {
+                        printf("\n Invalid input: Cannot find process with pid ", pid);
+                        DEBUG('a', "\n Invalid input: Cannot find process with pid ", pid);
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
+
+                    machine->WriteRegister(2, processTab->JoinUpdate(pid));
+                    break;
+                }
+
+                case SC_Exit:
+                {
+                    int exitCode = machine->ReadRegister(4);
+                    exitCode = processTab->ExitUpdate(exitCode);
+                    machine->WriteRegister(2, exitCode);
+                    break;
+                }
+                
                 default:
                     printf("\n Unexpected user mode exception (%d %d) \n", which, type);
                     interrupt->Halt();
