@@ -651,6 +651,23 @@ ExceptionHandler(ExceptionType which)
                     break;
                 }
 
+                case SC_Exec:
+                {
+                    int addr = machine->ReadRegister(4);
+                    char* name = User2System(addr, MaxString);
+                    if (name == NULL) {
+                        printf("\n Error: Cannot open file.");
+                        machine->WriteRegister(2, -1);
+                        delete [] name;
+                        break;
+                    }
+                    else {
+                        machine->WriteRegister(2, processTab->ExecUpdate(name));
+                        delete [] name;
+                        break;
+                    }
+                }
+
                 case SC_Up:
                 {
                     int addr = machine->ReadRegister(4);

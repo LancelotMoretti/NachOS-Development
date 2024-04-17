@@ -3,7 +3,7 @@
 ## Phase 1 (14/04/2024 - 16/04/2024)
 
 ### Đào Việt Hoàng
-- [ ] System call Exec
+- [x] System call Exec
 - [ ] System call CreateSemaphore
 
 ### Bùi Tá Phát
