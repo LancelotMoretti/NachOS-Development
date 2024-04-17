@@ -665,9 +665,9 @@ ExceptionHandler(ExceptionType which)
                     }
 
                     //Check for semaphore called $name in the list 
-                    for (int i = 0; i < semTab.size(); i++) {           // Need review
-                        if (strcmp(semTab[i]->getName, name) == 0) {
-                            int temp = semTab[i]->V();
+                    for (int i = 0; i < semaphoreTable.size(); i++) {           // Need review
+                        if (strcmp(semaphoreTable[i]->getName, name) == 0) {
+                            int temp = semaphoreTable[i]->V();
 
                             if (temp == -1) {
                                 printf("\n Semaphore is non-existent");
@@ -704,9 +704,9 @@ ExceptionHandler(ExceptionType which)
                     }
 
                     //Check for semaphore called $name in the list 
-                    for (int i = 0; i < semTab.size(); i++) {           // Need review
-                        if (strcmp(semTab[i]->getName, name) == 0) {
-                            int temp = semTab[i]->P();
+                    for (int i = 0; i < semaphoreTable.size(); i++) {           // Need review
+                        if (strcmp(semaphoreTable[i]->getName, name) == 0) {
+                            int temp = semaphoreTable[i]->P();
 
                             if (temp == -1) {
                                 printf("\n Semaphore is non-existent");

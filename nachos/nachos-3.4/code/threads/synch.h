@@ -51,6 +51,8 @@ class Semaphore {
     List *queue;       // threads waiting in P() for the value to be > 0
 };
 
+#define MAX_SEMAPHORES 10
+
 // The following class defines a "lock".  A lock can be BUSY or FREE.
 // There are only two operations allowed on a lock: 
 //

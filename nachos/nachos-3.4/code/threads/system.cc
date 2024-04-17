@@ -24,12 +24,14 @@ Timer *timer;				// the hardware timer device,
 #ifdef FILESYS_NEEDED
 FileSystem  *fileSystem;
 Lock *addrLock;				// the lock for address space
+Semaphore *semaphoreTable[MAX_SEMAPHORES];	// the semaphores
 #endif
 
 #ifdef FILESYS
 SynchDisk   *synchDisk;
 #ifndef FILESYS_NEEDED
 Lock *addrLock;				// the lock for address space
+Semaphore *semaphoreTable[MAX_SEMAPHORES];	// the semaphores
 #endif
 #endif
 
@@ -165,12 +167,18 @@ Initialize(int argc, char **argv)
 #ifdef FILESYS
     synchDisk = new SynchDisk("DISK");
     addrLock = new Lock("addrLock");		// initialize the lock for address space
+    for (int i = 0; i < MAX_SEMAPHORES; i++) {
+        semaphoreTable[i] = NULL;
+    }
 #endif
 
 #ifdef FILESYS_NEEDED
     fileSystem = new FileSystem(format);
 #ifndef FILESYS
     addrLock = new Lock("addrLock");		// initialize the lock for address space
+    for (int i = 0; i < MAX_SEMAPHORES; i++) {
+        semaphoreTable[i] = NULL;
+    }
 #endif
 #endif
 
@@ -199,12 +207,22 @@ Cleanup()
 #ifdef FILESYS_NEEDED
     delete fileSystem;
     delete addrLock;
+    for (int i = 0; i < MAX_SEMAPHORES; i++) {
+        if (semaphoreTable[i] != NULL) {
+            delete semaphoreTable[i];
+        }
+    }
 #endif
 
 #ifdef FILESYS
     delete synchDisk;
 #ifndef FILESYS_NEEDED
     delete addrLock;
+    for (int i = 0; i < MAX_SEMAPHORES; i++) {
+        if (semaphoreTable[i] != NULL) {
+            delete semaphoreTable[i];
+        }
+    }
 #endif
 #endif
     

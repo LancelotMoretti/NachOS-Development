@@ -45,6 +45,7 @@ extern SynchConsole* gSynchConsole;
 #include "synch.h"
 extern FileSystem  *fileSystem;
 extern Lock *addrLock;				// the lock for address space
+extern Semaphore *semaphoreTable[MAX_SEMAPHORES];	// the semaphores
 #endif
 
 #ifdef FILESYS
@@ -52,6 +53,7 @@ extern Lock *addrLock;				// the lock for address space
 extern SynchDisk   *synchDisk;
 #ifndef FILESYS_NEEDED
 extern Lock *addrLock;				// the lock for address space
+extern Semaphore *semaphoreTable[MAX_SEMAPHORES];	// the semaphores
 #endif
 #endif
 
