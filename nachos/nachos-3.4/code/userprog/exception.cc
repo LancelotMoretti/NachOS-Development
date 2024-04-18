@@ -681,7 +681,7 @@ ExceptionHandler(ExceptionType which)
                     }
                     else {
                         //find empty semaphore
-                        for (int i = 0; i < semaphoreTable.size(); ++i) {
+                        for (int i = 0; i < 10; ++i) {
                             if (semaphoreTable[i] == NULL) {
                                 semaphoreTable[i] = new Semaphore(name, semval);
                                 machine->WriteRegister(2, 0);
@@ -701,6 +701,7 @@ ExceptionHandler(ExceptionType which)
                 {
                     int addr = machine->ReadRegister(4);
                     char *name = User2System(addr, MaxString); // <-- Read char* name from user space
+                    bool success = false;
 
                     if (name == NULL) {
                         printf("\n Invalid input: Cannot read semaphore name");
@@ -711,27 +712,26 @@ ExceptionHandler(ExceptionType which)
                     }
 
                     //Check for semaphore called $name in the list 
-                    for (int i = 0; i < semaphoreTable.size(); i++) {           // Need review
-                        if (strcmp(semaphoreTable[i]->getName, name) == 0) {
-                            int temp = semaphoreTable[i]->V();
-
-                            if (temp == -1) {
-                                printf("\n Semaphore is non-existent");
-                                DEBUG('a', "\n Semaphore is non-existent");
-                                machine->WriteRegister(2, -1);
-                                delete []name;
-                                break;
-                            }
-
-                            machine->WriteRegister(2, temp); 
-                            delete []name;
+                    for (int i = 0; i < 10; i++) {           // Need review
+                        if (semaphoreTable[i] == NULL) {
+                            continue;
+                        }
+                        const char* semName = semaphoreTable[i]->getName();
+                        if (strcmp(semName, name) == 0) {
+                            semaphoreTable[i]->V();
+                            success = true;
                             break;
                         }
                     }
 
-                    //If not return error, else call syscall Signal sem->V()
-                    printf("\n Invalid input: Cannot find similar sempahore with name ", name);
-                    DEBUG('a', "\n Invalid input: Cannot find similar sempahore with name ", name);
+                    if (!success) {
+                        printf("\n Semaphore is non-existent");
+                        DEBUG('a', "\n Semaphore is non-existent");
+                        machine->WriteRegister(2, -1);
+                    }
+                    else {
+                        machine->WriteRegister(2, 0);
+                    }
                     delete []name;
                     break;
                 }
@@ -740,6 +740,7 @@ ExceptionHandler(ExceptionType which)
                 {
                     int addr = machine->ReadRegister(4);
                     char *name = User2System(addr, MaxString); // <-- Read char* name from user space
+                    bool success = false;
 
                     if (name == NULL) {
                         printf("\n Invalid input: Cannot read semaphore name");
@@ -750,27 +751,26 @@ ExceptionHandler(ExceptionType which)
                     }
 
                     //Check for semaphore called $name in the list 
-                    for (int i = 0; i < semaphoreTable.size(); i++) {           // Need review
-                        if (strcmp(semaphoreTable[i]->getName, name) == 0) {
-                            int temp = semaphoreTable[i]->P();
-
-                            if (temp == -1) {
-                                printf("\n Semaphore is non-existent");
-                                DEBUG('a', "\n Semaphore is non-existent");
-                                machine->WriteRegister(2, -1);
-                                delete []name;
-                                break;
-                            }
-
-                            machine->WriteRegister(2, temp); 
-                            delete []name;
+                    for (int i = 0; i < 10; i++) {           // Need review
+                        if (semaphoreTable[i] == NULL) {
+                            continue;
+                        }
+                        const char* semName = semaphoreTable[i]->getName();
+                        if (strcmp(semName, name) == 0) {
+                            semaphoreTable[i]->P();
+                            success = true;
                             break;
                         }
                     }
 
-                    //If not return error, else call syscall Wait sem->P()
-                    printf("\n Invalid input: Cannot find similar sempahore with name ", name);
-                    DEBUG('a', "\n Invalid input: Cannot find similar sempahore with name ", name);
+                    if (!success) {
+                        printf("\n Semaphore is non-existent");
+                        DEBUG('a', "\n Semaphore is non-existent");
+                        machine->WriteRegister(2, -1);
+                    }
+                    else {
+                        machine->WriteRegister(2, 0);
+                    }
                     delete []name;
                     break;
                 }
