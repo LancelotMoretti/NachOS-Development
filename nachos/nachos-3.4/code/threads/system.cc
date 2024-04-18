@@ -14,6 +14,7 @@
 Thread *currentThread;			// the thread we are running now
 Thread *threadToBeDestroyed;  		// the thread that just finished
 PTable *processTab;			// the process table
+STable *semaphoreTable;	        // the semaphore table
 BitMap *gPhysPageBitMap;			// the physical page bitmap
 Scheduler *scheduler;			// the ready list
 Interrupt *interrupt;			// interrupt status
@@ -24,14 +25,12 @@ Timer *timer;				// the hardware timer device,
 #ifdef FILESYS_NEEDED
 FileSystem  *fileSystem;
 Lock *addrLock;				// the lock for address space
-Semaphore *semaphoreTable[MAX_SEMAPHORES];	// the semaphores
 #endif
 
 #ifdef FILESYS
 SynchDisk   *synchDisk;
 #ifndef FILESYS_NEEDED
 Lock *addrLock;				// the lock for address space
-Semaphore *semaphoreTable[MAX_SEMAPHORES];	// the semaphores
 #endif
 #endif
 
@@ -154,6 +153,8 @@ Initialize(int argc, char **argv)
     processTab = new PTable(10);
     currentThread->setStatus(RUNNING);
 
+    semaphoreTable = new STable();
+
     interrupt->Enable();
     CallOnUserAbort(Cleanup);			// if user hits ctl-C
     
@@ -165,18 +166,12 @@ Initialize(int argc, char **argv)
 #ifdef FILESYS
     synchDisk = new SynchDisk("DISK");
     addrLock = new Lock("addrLock");		// initialize the lock for address space
-    for (int i = 0; i < MAX_SEMAPHORES; i++) {
-        semaphoreTable[i] = NULL;
-    }
 #endif
 
 #ifdef FILESYS_NEEDED
     fileSystem = new FileSystem(format);
 #ifndef FILESYS
     addrLock = new Lock("addrLock");		// initialize the lock for address space
-    for (int i = 0; i < MAX_SEMAPHORES; i++) {
-        semaphoreTable[i] = NULL;
-    }
 #endif
 #endif
 

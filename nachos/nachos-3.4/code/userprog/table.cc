@@ -1,5 +1,7 @@
-#include "ptable.h"
+#include "table.h"
 #include "system.h"
+
+//----------------------------------------------------------PTable----------------------------------------------------------
 
 PTable::PTable(int size)
 {
@@ -171,4 +173,78 @@ char* PTable::GetName(int pID)
 {
 	if(pID>=0 && pID<10 && bm->Test(pID))
 		return pcb[pID]->GetNameThread();
+}
+
+//----------------------------------------------------------STable----------------------------------------------------------
+
+STable::STable()
+{
+	int i = 0;
+	bm = new BitMap(MAX_SEMAPHORES);
+	for(i = 0 ; i < MAX_SEMAPHORES ; ++i)
+		semTab[i] = NULL;
+}
+
+STable::~STable()
+{
+	int i=0;
+	if(bm!=NULL)
+		delete bm;
+	for(i=0; i<MAX_SEMAPHORES; i++)
+		if(semTab[i]!=NULL)
+			delete semTab[i];
+}
+
+int STable::Create(char* name, int init)
+{
+	int ID= GetFreeSlot();
+	if(ID==-1)
+	{
+		printf("\nLoi: Da vuot qua so luong semaphore toi da !!!\n");
+		return -1;
+	}
+	semTab[ID]= new Semaphore(name,init);
+	bm->Mark(ID);
+	return ID;
+}
+
+int STable::Wait(char* name)
+{
+	int ID= -1;
+	for(int i=0; i<MAX_SEMAPHORES; i++)
+		if(semTab[i]!=NULL && !strcmp(semTab[i]->getName(),name))
+		{
+			ID= i;
+			break;
+		}
+	if(ID==-1)
+	{
+		printf("\nLoi: Khong ton tai semaphore nay !!!\n");
+		return -1;
+	}
+	semTab[ID]->P();
+	return 0;
+}
+
+int STable::Signal(char* name)
+{
+	int ID= -1;
+	for(int i=0; i<MAX_SEMAPHORES; i++)
+		if(semTab[i]!=NULL && !strcmp(semTab[i]->getName(),name))
+		{
+			ID= i;
+			break;
+		}
+	if(ID==-1)
+	{
+		printf("\nLoi: Khong ton tai semaphore nay !!!\n");
+		return -1;
+	}
+	semTab[ID]->V();
+	return 0;
+}
+
+int STable::GetFreeSlot()
+{
+	return bm->FindFreeSlot();
 }

@@ -15,7 +15,7 @@
 #include "interrupt.h"
 #include "stats.h"
 #include "timer.h"
-#include "ptable.h"
+#include "table.h"
 #include "bitmap.h"
 
 // Initialization and cleanup routines
@@ -27,6 +27,7 @@ extern void Cleanup();				// Cleanup, called when
 extern Thread *currentThread;			// the thread holding the CPU
 extern Thread *threadToBeDestroyed;  		// the thread that just finished
 extern PTable *processTab;			// the process table
+extern STable *semaphoreTab;			// the semaphore table
 extern BitMap *gPhysPageBitMap;			// the physical page bitmap
 extern Scheduler *scheduler;			// the ready list
 extern Interrupt *interrupt;			// interrupt status
@@ -45,7 +46,6 @@ extern SynchConsole* gSynchConsole;
 #include "synch.h"
 extern FileSystem  *fileSystem;
 extern Lock *addrLock;				// the lock for address space
-extern Semaphore *semaphoreTable[MAX_SEMAPHORES];	// the semaphores
 #endif
 
 #ifdef FILESYS
@@ -53,7 +53,6 @@ extern Semaphore *semaphoreTable[MAX_SEMAPHORES];	// the semaphores
 extern SynchDisk   *synchDisk;
 #ifndef FILESYS_NEEDED
 extern Lock *addrLock;				// the lock for address space
-extern Semaphore *semaphoreTable[MAX_SEMAPHORES];	// the semaphores
 #endif
 #endif
 

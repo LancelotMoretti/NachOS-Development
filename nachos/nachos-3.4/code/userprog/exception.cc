@@ -672,33 +672,19 @@ ExceptionHandler(ExceptionType which)
                 {
                     int nameAddr = machine->ReadRegister(4);
                     int semval = machine->ReadRegister(5);
-                    bool success = false;
                     char* name = User2System(nameAddr, MaxString);
                     if (name == NULL) {
                         printf("\n Error: Cannot create Semaphore.");
                         machine->WriteRegister(2, -1);
-                        delete [] name;
-                        break;
+                    }
+                    else if (semaphoreTab->Create(name, semval) != -1) {
+                        machine->WriteRegister(2, 0);
                     }
                     else {
-                        //find empty semaphore
-                        for (int i = 0; i < 10; ++i) {
-                            if (semaphoreTable[i] == NULL) {
-                                semaphoreTable[i] = new Semaphore(name, semval);
-                                success = true;
-                                break;
-                            }
-                        }
-                        if (!success) {
-                            printf("\n Error: Cannot create Semaphore.");
-                            machine->WriteRegister(2, -1);
-                        }
-                        else {
-                            machine->WriteRegister(2, 0);
-                        }
-                        delete []name;
-                        break;
+                        machine->WriteRegister(2, -1);
                     }
+                    delete [] name;
+                    break;
                 }
 
                 case SC_Up:
@@ -714,27 +700,11 @@ ExceptionHandler(ExceptionType which)
                         delete[] name;
                         break;
                     }
-
-                    //Check for semaphore called $name in the list 
-                    for (int i = 0; i < 10; i++) {           // Need review
-                        if (semaphoreTable[i] == NULL) {
-                            continue;
-                        }
-                        const char* semName = semaphoreTable[i]->getName();
-                        if (strcmp(semName, name) == 0) {
-                            semaphoreTable[i]->V();
-                            success = true;
-                            break;
-                        }
-                    }
-
-                    if (!success) {
-                        printf("\n Semaphore is non-existent");
-                        DEBUG('a', "\n Semaphore is non-existent");
-                        machine->WriteRegister(2, -1);
+                    else if (semaphoreTab->Signal(name) != -1) {
+                        machine->WriteRegister(2, 0);
                     }
                     else {
-                        machine->WriteRegister(2, 0);
+                        machine->WriteRegister(2, -1);
                     }
                     delete []name;
                     break;
@@ -753,27 +723,11 @@ ExceptionHandler(ExceptionType which)
                         delete[] name;
                         break;
                     }
-
-                    //Check for semaphore called $name in the list 
-                    for (int i = 0; i < 10; i++) {           // Need review
-                        if (semaphoreTable[i] == NULL) {
-                            continue;
-                        }
-                        const char* semName = semaphoreTable[i]->getName();
-                        if (strcmp(semName, name) == 0) {
-                            semaphoreTable[i]->P();
-                            success = true;
-                            break;
-                        }
-                    }
-
-                    if (!success) {
-                        printf("\n Semaphore is non-existent");
-                        DEBUG('a', "\n Semaphore is non-existent");
-                        machine->WriteRegister(2, -1);
+                    else if (semaphoreTab->Wait(name) != -1) {
+                        machine->WriteRegister(2, 0);
                     }
                     else {
-                        machine->WriteRegister(2, 0);
+                        machine->WriteRegister(2, -1);
                     }
                     delete []name;
                     break;
