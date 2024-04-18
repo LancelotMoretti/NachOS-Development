@@ -672,6 +672,7 @@ ExceptionHandler(ExceptionType which)
                 {
                     int nameAddr = machine->ReadRegister(4);
                     int semval = machine->ReadRegister(5);
+                    bool success = false;
                     char* name = User2System(nameAddr, MaxString);
                     if (name == NULL) {
                         printf("\n Error: Cannot create Semaphore.");
@@ -684,15 +685,18 @@ ExceptionHandler(ExceptionType which)
                         for (int i = 0; i < 10; ++i) {
                             if (semaphoreTable[i] == NULL) {
                                 semaphoreTable[i] = new Semaphore(name, semval);
-                                machine->WriteRegister(2, 0);
-                                delete [] name;
+                                success = true;
                                 break;
                             }
                         }
-                        //cannot find an empty slot for the new semaphore
-                        printf("\n Error: Cannot create Semaphore.");
-                        machine->WriteRegister(2, -1);
-                        delete [] name;
+                        if (!success) {
+                            printf("\n Error: Cannot create Semaphore.");
+                            machine->WriteRegister(2, -1);
+                        }
+                        else {
+                            machine->WriteRegister(2, 0);
+                        }
+                        delete []name;
                         break;
                     }
                 }

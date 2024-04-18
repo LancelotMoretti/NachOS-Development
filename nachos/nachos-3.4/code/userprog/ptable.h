@@ -18,6 +18,7 @@ private:
 public:
 	PTable(int size);		//Khoi tao size doi tuong pcb de luu size process. Gan gia tri ban dau la null. Nho khoi tao *bm va *bmsem de su dung
 	~PTable();			//Huy doi tuong da tao
+	int AddMainThread(char* name);	//Them mot main thread vao bang pcb
 	int ExecUpdate(char* filename);		//return PID
 	int ExitUpdate(int ec);
 	int JoinUpdate(int pID);

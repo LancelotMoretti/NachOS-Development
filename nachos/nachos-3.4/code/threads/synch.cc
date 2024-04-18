@@ -101,11 +101,7 @@ Semaphore::V()
 // Note -- without a correct implementation of Condition::Wait(), 
 // the test case in the network assignment won't work!
 Lock::Lock(char* debugName) {
-    int i = 0;
-    while (debugName[i] != '\0') {
-        name[i] = debugName[i];
-        i++;
-    }
+    name = debugName;
 }
 Lock::~Lock() {}
 void Lock::Acquire() {}

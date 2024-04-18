@@ -10,6 +10,9 @@ PTable::PTable(int size)
 		
 	for(i = 0 ; i < MAXPROCESS ; ++i)
 		pcb[i] = NULL;
+
+	pcb[0] = new PCB(0);
+	currentThread = new Thread("main");
 	bm->Mark(0);
 }
 

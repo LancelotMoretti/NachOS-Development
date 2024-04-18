@@ -152,8 +152,6 @@ Initialize(int argc, char **argv)
     // But if it ever tries to give up the CPU, we better have a Thread
     // object to save its state. 
     processTab = new PTable(10);
-    int processID = processTab->ExecUpdate("main");
-    currentThread = new Thread("main", processID);		
     currentThread->setStatus(RUNNING);
 
     interrupt->Enable();
