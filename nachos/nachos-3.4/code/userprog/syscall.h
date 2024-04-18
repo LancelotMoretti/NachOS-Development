@@ -51,6 +51,8 @@
 
 #define SC_Sleep        24
 
+#define SC_CreateSemaphore 25
+
 #define byte unsigned char
 
 #ifndef IN_ASM
@@ -175,6 +177,8 @@ void Fork(void (*func)());
 void Yield();		
 
 void Sleep();
+
+int CreateSemaphore(char* name, int semval);
 
 #endif /* IN_ASM */
 

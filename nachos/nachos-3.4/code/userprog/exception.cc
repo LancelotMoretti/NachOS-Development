@@ -668,6 +668,35 @@ ExceptionHandler(ExceptionType which)
                     }
                 }
 
+                case SC_CreateSemaphore:
+                {
+                    int nameAddr = machine->ReadRegister(4);
+                    int semval = machine->ReadRegister(5);
+                    char* name = User2System(nameAddr, MaxString);
+                    if (name == NULL) {
+                        printf("\n Error: Cannot create Semaphore.");
+                        machine->WriteRegister(2, -1);
+                        delete [] name;
+                        break;
+                    }
+                    else {
+                        //find empty semaphore
+                        for (int i = 0; i < semaphoreTable.size(); ++i) {
+                            if (semaphoreTable[i] == NULL) {
+                                semaphoreTable[i] = new Semaphore(name, semval);
+                                machine->WriteRegister(2, 0);
+                                delete [] name;
+                                break;
+                            }
+                        }
+                        //cannot find an empty slot for the new semaphore
+                        printf("\n Error: Cannot create Semaphore.");
+                        machine->WriteRegister(2, -1);
+                        delete [] name;
+                        break;
+                    }
+                }
+
                 case SC_Up:
                 {
                     int addr = machine->ReadRegister(4);

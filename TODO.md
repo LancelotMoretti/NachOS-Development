@@ -4,7 +4,7 @@
 
 ### Đào Việt Hoàng
 - [x] System call Exec
-- [ ] System call CreateSemaphore
+- [x] System call CreateSemaphore
 
 ### Bùi Tá Phát
 - [x] System call Join
