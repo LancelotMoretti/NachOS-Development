@@ -26,7 +26,7 @@
 
 ### Bùi Tá Phát
 - [x] Ping - Pong
-- [ ] Modify addrspace.cc, translate.cc, e.t.c
+- [x] Modify addrspace.cc, translate.cc, e.t.c
 - [ ] Scanner usage statistics
 
 ### Đặng Thanh Tú
