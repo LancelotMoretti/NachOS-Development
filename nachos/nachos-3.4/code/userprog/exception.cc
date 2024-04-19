@@ -677,7 +677,7 @@ ExceptionHandler(ExceptionType which)
                         printf("\n Error: Cannot create Semaphore.");
                         machine->WriteRegister(2, -1);
                     }
-                    else if (semaphoreTab->Create(name, semval) != -1) {
+                    else if (semaphoreTable->Create(name, semval) != -1) {
                         machine->WriteRegister(2, 0);
                     }
                     else {
@@ -700,7 +700,7 @@ ExceptionHandler(ExceptionType which)
                         delete[] name;
                         break;
                     }
-                    else if (semaphoreTab->Signal(name) != -1) {
+                    else if (semaphoreTable->Signal(name) != -1) {
                         machine->WriteRegister(2, 0);
                     }
                     else {
@@ -723,7 +723,7 @@ ExceptionHandler(ExceptionType which)
                         delete[] name;
                         break;
                     }
-                    else if (semaphoreTab->Wait(name) != -1) {
+                    else if (semaphoreTable->Wait(name) != -1) {
                         machine->WriteRegister(2, 0);
                     }
                     else {

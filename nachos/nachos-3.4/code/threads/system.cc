@@ -200,22 +200,12 @@ Cleanup()
 #ifdef FILESYS_NEEDED
     delete fileSystem;
     delete addrLock;
-    for (int i = 0; i < MAX_SEMAPHORES; i++) {
-        if (semaphoreTable[i] != NULL) {
-            delete semaphoreTable[i];
-        }
-    }
 #endif
 
 #ifdef FILESYS
     delete synchDisk;
 #ifndef FILESYS_NEEDED
     delete addrLock;
-    for (int i = 0; i < MAX_SEMAPHORES; i++) {
-        if (semaphoreTable[i] != NULL) {
-            delete semaphoreTable[i];
-        }
-    }
 #endif
 #endif
     
@@ -223,6 +213,7 @@ Cleanup()
     delete scheduler;
     delete interrupt;
     delete processTab;
+    delete semaphoreTable;
     delete gPhysPageBitMap;
     delete stats;
     

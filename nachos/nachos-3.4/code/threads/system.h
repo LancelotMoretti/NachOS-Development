@@ -27,7 +27,7 @@ extern void Cleanup();				// Cleanup, called when
 extern Thread *currentThread;			// the thread holding the CPU
 extern Thread *threadToBeDestroyed;  		// the thread that just finished
 extern PTable *processTab;			// the process table
-extern STable *semaphoreTab;			// the semaphore table
+extern STable *semaphoreTable;			// the semaphore table
 extern BitMap *gPhysPageBitMap;			// the physical page bitmap
 extern Scheduler *scheduler;			// the ready list
 extern Interrupt *interrupt;			// interrupt status
