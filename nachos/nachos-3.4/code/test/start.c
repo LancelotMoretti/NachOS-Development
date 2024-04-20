@@ -242,6 +242,14 @@ Down:
 	j	$31
 	.end Down
 
+	.globl ReadFileFormat
+	.ent	ReadFileFormat
+ReadFileFormat:
+	addiu $2,$0,SC_ReadFileFormat
+	syscall
+	j	$31
+	.end ReadFileFormat
+
 /* dummy function to keep gcc happy */
         .globl  __main
         .ent    __main

@@ -831,15 +831,12 @@ ExceptionHandler(ExceptionType which)
 
                     while (true) { // Đọc số thời điểm xét
                         len = file->Read(temp, 1);
-                        if (*temp != '\n' && (*temp < 48 || *temp > 57)) {
+                        if (*temp >= 48 && *temp <= 57) totalTimeStamp = totalTimeStamp * 10 + (*temp - 48);
+                        else if (*temp == '\n') break;
+                        else {
                             stopRun = true;
                             break;
                         }
-                        else if (*temp == '\n') {
-                            totalTimeStamp = totalTimeStamp * 10 + (*temp - 48);
-                            break;
-                        }
-                        else totalTimeStamp = totalTimeStamp * 10 + (*temp - 48);
                     }
 
                     if (stopRun) {
@@ -866,7 +863,6 @@ ExceptionHandler(ExceptionType which)
                                 break;
                             }
                             else if ((*temp == ' ' || *temp == '\n') && isSet == true) {
-                                curNum = curNum * 10 + (*temp - 48);
                                 cur = new Node;
                                 cur->data = curNum;
                                 cur = cur->next;

@@ -1,26 +1,57 @@
 #include "syscall.h"
 
 int main() {
-    //// Khai báo
-    int *listTime = 0;
-    int i = 0, j = 0, size = 0, index = 0, curSize = 0;
+    char* buffer = "Temporary buffer";
+    int totalLen = 0, curLen = 0, i = 0, curNum = 0;
+    int isRun = 1; // Thay thế cho biến bool
     OpenFileId testFile = Open("input.txt", 1);
 
     if (testFile == -1) {
         PrintString("Error opening file\n");
-    }
-    else {
-        ReadFileFormat(listTime, testFile);
-        size = listTime[index++];
-        PrintInt(size);
-        for (i; i < size; i++) {
-            curSize = listTime[index++];
-            PrintInt(curSize);
-            for (j = 0; j < curSize; j++) {
-                PrintInt(listTime[index++]);
+    } else {
+        // Đọc số thời gian
+        while (Read(buffer, 1, testFile) > 0) {
+            if (buffer[0] >= 48 && buffer[0] <= 57) {
+                totalLen = totalLen * 10 + (buffer[0] - 48);
+            } else if (buffer[0] == '\n' || buffer[0] == ' ') break;
+            else {
+                Close(testFile);
+                Halt();
+            }
+        }
+
+        if (totalLen == 0) { // Nếu không có mốc thời gian nào
+            Halt();
+        }
+
+        for (i = 0; i < totalLen; i++) {
+	        isRun = 1;
+            curNum = 0;
+            while (isRun == 1) {
+                curLen = Read(buffer, 1, testFile);
+                if (curLen == -1) {
+                    Close(testFile);
+                    Halt();
+                }
+
+                if (buffer[0] >= 48 && buffer[0] <= 57) {
+                    curNum = curNum * 10 + (buffer[0] - 48);
+                } else if (buffer[0] == ' ' || buffer[0] == '\n' || curLen == 0) { // Đã đọc xong số hiện tại
+                    ////// YOUR CODE GOES HERE
+
+                    ////// Nhớ lưu curNum và số thứ tự của máy vào file
+                    PrintInt(curNum);
+                    curNum = 0;
+                }
+                else { // Kí tự khác 
+                    Close(testFile);
+                    Halt();
+                }
+		        if (buffer[0] == '\n' || curLen == 0) isRun = 0; // Gặp dấu xuống dòng thì nghĩa là xong mốc thời gian hiện tại
             }
         }
     }
+
     Close(testFile);
     Halt();
 }
