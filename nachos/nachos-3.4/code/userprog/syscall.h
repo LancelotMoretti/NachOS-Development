@@ -51,7 +51,8 @@
 
 #define SC_Sleep        24
 
-#define SC_CreateSemaphore 25
+#define SC_CreateSemaphore  25
+#define SC_ReadFileFormat   26
 
 #define byte unsigned char
 
@@ -179,6 +180,8 @@ void Yield();
 void Sleep();
 
 int CreateSemaphore(char* name, int semval);
+
+int ReadFileFormat(int* arr, OpenFileId id);
 
 #endif /* IN_ASM */
 

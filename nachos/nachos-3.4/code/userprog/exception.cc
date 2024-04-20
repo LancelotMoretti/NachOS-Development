@@ -90,6 +90,34 @@ int System2User(int virtAddr, int len, char* buffer) {
     return i;
 }
 
+struct Node {
+    int data;
+    Node* next = NULL;
+};
+
+int System2UserInt(int virtAddr, int len, int* buffer) {
+    if (len < 0) return -1;
+    if (len == 0) return len;
+    int i = 0;
+    do {
+        machine->WriteMem(virtAddr + i, 4, buffer[i]);
+        i++;
+    } while (i < len);
+    return i;
+}
+
+void delete2DimNodeArr(Node** &arr, int size) {
+    if (arr == NULL || size <= 0) return;
+    for (int i = 0; i < size; i++) {
+        while (arr[i] != NULL) {
+            Node* cur = arr[i];
+            arr[i] = arr[i]->next;
+            delete cur;
+        }
+    }
+    delete []arr;
+}
+
 void IncPCReg() {
     // // Advance program counters.
     // registers[PrevPCReg] = registers[PCReg];	// for debugging, in case we
@@ -778,6 +806,112 @@ ExceptionHandler(ExceptionType which)
                 case SC_Sleep:
                 {
                     currentThread->Sleep();
+                    break;
+                }
+
+                case SC_ReadFileFormat:
+                {
+                    DEBUG('a', "\n SC_Write call ...");
+                    DEBUG('a', "\n Reading virtual address of filename");
+                    int addData = machine->ReadRegister(4); // Lấy địa chỉ lưu mảng dữ liệu
+                    DEBUG ('a', "\n Reading file ID.");
+                    int fID = machine->ReadRegister(5); // Lấy tham số id của file
+
+                    OpenFile* file = fileSystem->openFileList[fID]; // Tạo biến con trỏ đọc file
+                    if (file == NULL) {
+                        printf("\n Error reading file with id %d", fID);
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
+
+                    int *bufData = NULL; // buffer
+                    char *temp = new char;
+                    bool stopRun = false;
+                    int len, curNum = 0, size, totalTimeStamp = 0;
+
+                    while (true) { // Đọc số thời điểm xét
+                        len = file->Read(temp, 1);
+                        if (*temp != '\n' && (*temp < 48 || *temp > 57)) {
+                            stopRun = true;
+                            break;
+                        }
+                        else if (*temp == '\n') {
+                            totalTimeStamp = totalTimeStamp * 10 + (*temp - 48);
+                            break;
+                        }
+                        else totalTimeStamp = totalTimeStamp * 10 + (*temp - 48);
+                    }
+
+                    if (stopRun) {
+                        delete temp;
+                        break;
+                    }
+
+                    Node **bigHead = NULL;
+                    if (!stopRun) bigHead = new Node *[totalTimeStamp];
+                    int index = 0, totalSize = 1;
+
+                    // Đọc từng kí tự trong mảng vào mảng Node 2 chiều
+                    while (!stopRun) {
+                        // Đọc từng dòng
+                        bigHead[index] = new Node; // Head đang đóng vai trò là dummy node, ở cuối vòng for thì nó sẽ giữ giá trị là số phần tử mảng
+                        Node* cur = bigHead[index]->next;
+                        curNum = 0, size = 0;
+                        bool isSet = false; // Biến isSet để kiểm tra trường hợp (2 dấu cách) hoặc (dấu cách và dấu xuống dòng) đứng liền nhau
+
+                        while (true) {
+                            len = file->Read(temp, 1); // Đọc từng kí tự
+                            if (*temp != ' ' && *temp != '\n' && (*temp < 48 || *temp > 57)) {
+                                stopRun = true;
+                                break;
+                            }
+                            else if ((*temp == ' ' || *temp == '\n') && isSet == true) {
+                                curNum = curNum * 10 + (*temp - 48);
+                                cur = new Node;
+                                cur->data = curNum;
+                                cur = cur->next;
+
+                                size++;
+                                curNum = 0;
+                                isSet = false;
+                            }
+                            else if (*temp >= '0' && *temp <= '9') {
+                                curNum = curNum * 10 + (*temp - 48);
+                                isSet = true;
+                            }
+
+                            if (*temp == '\n') { // Nếu gặp kí tự xuống dòng thì chỉ kết thúc vòng while bên trong
+                                bigHead[index]->data = size;
+                                break;
+                            }
+                        }
+
+                        index++;
+                        totalSize += size + 1; // Size + 1 là số phần tử của từng dòng, cộng thêm 1 phần tử để lưu kích cỡ 
+                    }
+
+                    // Chuyển dữ liệu tử mảng Node 2 chiều sang mảng int 1 chiều
+                    if (!stopRun) {
+                        bufData = new int [totalSize];
+                        index = 0;
+                        bufData[index++] = totalSize;
+                        for (int i = 0; i < totalTimeStamp; i++) {
+                            Node* cur = bigHead[i];
+                            while (cur != NULL) {
+                                bufData[index++] = cur->data;
+                                cur = cur->next;
+                            }
+                        }
+
+                        System2UserInt(addData, totalSize, bufData); // Chuyển dữ liệu từ Kernel sang User space
+
+                        if (stopRun) machine->WriteRegister(2, -2); // Gặp điểm kết thúc file
+                        else machine->WriteRegister(2, len); // Không gặp điểm kết thúc file thì in ra số kí tự đọc được
+                    }
+
+                    delete2DimNodeArr(bigHead, totalTimeStamp); // Deallocate mảng 2 chiều
+                    delete temp;
+                    delete bufData;
                     break;
                 }
 
