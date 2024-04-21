@@ -134,7 +134,6 @@ AddrSpace::AddrSpace(char * filename)
     unsigned int numCodePage, numDataPage; // số trang cho phần code và phần initData
     int lastCodePageSize, lastDataPageSize, firstDataPageSize,tempDataSize; // kích
     //thước ghi vào trang cuối Code, initData, và trang đầu của initData
-    printf("\nAddrSpace::Load: %s\n",filename);
     OpenFile* executable = fileSystem->Open(filename);
     if (executable == NULL){
         printf("\nAddrspace::Error opening file: %s",filename);
@@ -186,7 +185,7 @@ AddrSpace::AddrSpace(char * filename)
         // pages to be read-only
         // xóa các trang này trên memory
         bzero(&(machine->mainMemory[pageTable[i].physicalPage*PageSize]), PageSize);
-        printf("phyPage %d \n",pageTable[i].physicalPage);
+        // printf("phyPage %d \n",pageTable[i].physicalPage);
     }
     addrLock->Release();
     // Calculate numCodePage and numDataPage

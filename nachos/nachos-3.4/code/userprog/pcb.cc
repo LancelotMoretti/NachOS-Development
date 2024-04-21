@@ -23,16 +23,16 @@ PCB::PCB(int id)
 
 PCB::~PCB()
 {
-	printf("Ok1\n");
 	if(joinsem != NULL)
 		delete joinsem;
-	printf("Ok2\n");
+	//For debugging: error occured when delete this thing,
+		//for more information, see ~Semaphore() --> ~List() --> List::Remove() --> List::SortedRemove()
+	//Already check the address, the exitsem is not duplicate with other semaphore
+		//So the error is not caused by the duplicate semaphore
 	if(exitsem != NULL)
 		delete exitsem;
-	printf("Ok3\n");
 	if(mutex != NULL)
 		delete mutex;
-	printf("Ok4\n");
 }
 
 //------------------------------------------------------------------

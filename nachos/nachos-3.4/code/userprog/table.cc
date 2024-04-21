@@ -21,16 +21,12 @@ PTable::PTable(int size)
 PTable::~PTable()
 {
 	int i=0;
-	printf("\nDestructor PTable\n");
 	if(bm!=NULL)
 		delete bm;
 	if(bmsem!=NULL)
 		delete bmsem;
 	for(i=0; i<MAXPROCESS; i++) {
-		printf("\nDestructor PCB[%d]\n",i);
-		printf("\npcb[%d]=%d\n",i,pcb[i]);
 		if(pcb[i]!=NULL) {
-			printf("\npcb[%d]=%d\n",i,pcb[i]);
 			delete pcb[i];
 		}
 	}
@@ -187,51 +183,55 @@ STable::STable()
 {
 	int i = 0;
 	bm = new BitMap(MAX_SEMAPHORES);
-	for(i = 0 ; i < MAX_SEMAPHORES ; ++i)
+	for (i = 0 ; i < MAX_SEMAPHORES; i++) {
 		semTab[i] = NULL;
+	}
 }
 
 STable::~STable()
 {
-	int i=0;
-	if(bm!=NULL)
+	int i = 0;
+	if (bm != NULL) {
 		delete bm;
-	for(i=0; i<MAX_SEMAPHORES; i++)
-		if(semTab[i]!=NULL)
+	}
+	for (i = 0; i < MAX_SEMAPHORES; i++) {
+		if (semTab[i] != NULL) {
 			delete semTab[i];
+		}
+	}
 }
 
 int STable::Create(char* name, int init)
 {
 	for (int i = 0; i < MAX_SEMAPHORES; i++)
 	{
-		if (semTab[i] != NULL && !strcmp(semTab[i]->getName(), name))
+		if (bm->Test(i) && !strcmp(semTab[i]->getName(), name))
 		{
 			printf("\nLoi: Semaphore da ton tai !!!\n");
 			return -1;
 		}
 	}
-	int ID= GetFreeSlot();
-	if(ID==-1)
+	int ID = GetFreeSlot();
+	if (ID == -1)
 	{
 		printf("\nLoi: Da vuot qua so luong semaphore toi da !!!\n");
 		return -1;
 	}
-	semTab[ID]= new Semaphore(name,init);
+	semTab[ID]= new Semaphore(name, init);
 	bm->Mark(ID);
 	return ID;
 }
 
 int STable::Wait(char* name)
 {
-	int ID= -1;
-	for(int i=0; i<MAX_SEMAPHORES; i++)
-		if(semTab[i]!=NULL && !strcmp(semTab[i]->getName(),name))
+	int ID = -1;
+	for (int i = 0; i < MAX_SEMAPHORES; i++)
+		if (semTab[i] != NULL && !strcmp(semTab[i]->getName(), name))
 		{
-			ID= i;
+			ID = i;
 			break;
 		}
-	if(ID==-1)
+	if (ID == -1)
 	{
 		printf("\nLoi: Khong ton tai semaphore nay !!!\n");
 		return -1;
@@ -242,14 +242,14 @@ int STable::Wait(char* name)
 
 int STable::Signal(char* name)
 {
-	int ID= -1;
-	for(int i=0; i<MAX_SEMAPHORES; i++)
-		if(semTab[i]!=NULL && !strcmp(semTab[i]->getName(),name))
+	int ID = -1;
+	for (int i = 0; i < MAX_SEMAPHORES; i++)
+		if (semTab[i] != NULL && !strcmp(semTab[i]->getName(),name))
 		{
-			ID= i;
+			ID = i;
 			break;
 		}
-	if(ID==-1)
+	if(ID == -1)
 	{
 		printf("\nLoi: Khong ton tai semaphore nay !!!\n");
 		return -1;

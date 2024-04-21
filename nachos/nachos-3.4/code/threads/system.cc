@@ -209,21 +209,18 @@ Cleanup()
 #endif
 #endif
     
-    printf("Ok1\n");
     delete timer;
-    printf("Ok2\n");
     delete scheduler;
-    printf("Ok3\n");
     delete interrupt;
-    printf("Ok4\n");
-    delete processTab;
-    printf("Ok5\n");
     delete semaphoreTable;
-    printf("Ok6\n");
     delete gPhysPageBitMap;
-    printf("Ok7\n");
     delete stats;
-    printf("Ok8\n");
+
+    //Delete this thing will cause segmentation fault (core dumped)
+    //Since when we delete processTab, we will have core dumped and there will be memory leak
+        //we will comment it to prevent the delete error
+    //For debugging: error occured when delete exitsem of pcb[1], for more information, see ~PCB()
+    // delete processTab;
     
     Exit(0);
 }

@@ -217,7 +217,24 @@ List::SortedInsert(void *item, int sortKey)
 void *
 List::SortedRemove(int *keyPtr)
 {
-    ListElement *element = first;
+    //If we printf something here, it will be printed out in the console
+        //Furthermore, everything doing with first will generate error
+            //even if we just get the address contained in first
+
+        //Even first == NULL or next first point to some unknown address, this will not generate error
+            //since it is the very first time it executes in while loop in ~List()
+
+        //Everything happen just like when we come here for the first time,
+            //this List is already delete by something else,
+            //but how can that possible? Since we are can still go to this function
+            //and we can still printf something here
+
+        //If *element cannot hold first, why even when we printf the address of first, it still generate error
+            //and why even the pcb[0] and other things that use List can still run normally
+        
+        //Maybe the problem is something else with the virtual machine (?)
+    ListElement *element = first; //Error occurred here with pcb[1]
+    //If we printf something here, it will not be printed out in the console
     void *thing;
 
     if (IsEmpty()) 

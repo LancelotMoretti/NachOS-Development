@@ -49,7 +49,7 @@ Semaphore::Semaphore(char* debugName, int initialValue)
 
 Semaphore::~Semaphore()
 {
-    delete queue;
+    delete queue; //Error occurred here with pcb[1]
     delete[] name;
 }
 
