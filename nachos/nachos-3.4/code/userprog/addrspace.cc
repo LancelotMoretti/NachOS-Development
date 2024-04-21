@@ -134,6 +134,7 @@ AddrSpace::AddrSpace(char * filename)
     unsigned int numCodePage, numDataPage; // số trang cho phần code và phần initData
     int lastCodePageSize, lastDataPageSize, firstDataPageSize,tempDataSize; // kích
     //thước ghi vào trang cuối Code, initData, và trang đầu của initData
+    printf("\nAddrSpace::Load: %s\n",filename);
     OpenFile* executable = fileSystem->Open(filename);
     if (executable == NULL){
         printf("\nAddrspace::Error opening file: %s",filename);
@@ -168,7 +169,15 @@ AddrSpace::AddrSpace(char * filename)
     for (i = 0; i < numPages; i++) {
         pageTable[i].virtualPage = i; // for now, virtual page # = phys page #
         // pageTable[i].physicalPage = tìm 1 trang trống và đánh dấu đã sử dụng;
-        pageTable[i].physicalPage = i;
+        pageTable[i].physicalPage = gPhysPageBitMap->Find();
+        if (pageTable[i].physicalPage == -1){
+            printf("\nAddrSpace::Error: Not enough memory for new process..!");
+            numPages = 0;
+            delete executable;
+            addrLock->Release();
+            return ;
+        }
+
         pageTable[i].valid = TRUE;
         pageTable[i].use = FALSE;
         pageTable[i].dirty = FALSE;
@@ -197,9 +206,11 @@ AddrSpace::AddrSpace(char * filename)
     // Copy the Code segment into memory
     for (i = 0; i < numCodePage; i++) {
         // if(noffH.code.size > 0)
-        executable->ReadAt(&(machine->mainMemory[noffH.code.virtualAddr]) +
-        pageTable[i].physicalPage*PageSize, i<(numCodePage-1)?PageSize:lastCodePageSize,
-        noffH.code.inFileAddr + i*PageSize);
+        executable->ReadAt(
+            &(machine->mainMemory[noffH.code.virtualAddr]) + pageTable[i].physicalPage*PageSize,
+            i<(numCodePage-1)?PageSize:lastCodePageSize,
+            noffH.code.inFileAddr + i*PageSize
+        );
     }
     //Check whether last page of code segment is full and copy the first part of
     //initData segment into this page
@@ -219,7 +230,7 @@ AddrSpace::AddrSpace(char * filename)
             &(machine->mainMemory[noffH.code.virtualAddr])+pageTable[i].physicalPage*PageSize,
             j<(numDataPage-1)?PageSize:lastDataPageSize,
             noffH.initData.inFileAddr + j*PageSize + firstDataPageSize
-            );
+        );
         i++;
     }
     delete executable;

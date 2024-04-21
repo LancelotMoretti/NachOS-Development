@@ -35,7 +35,8 @@
 
 Semaphore::Semaphore(char* debugName, int initialValue)
 {
-    name = debugName;
+    name = new char[strlen(debugName) + 1];
+    strcpy(name, debugName);
     value = initialValue;
     queue = new List;
 }
@@ -49,6 +50,7 @@ Semaphore::Semaphore(char* debugName, int initialValue)
 Semaphore::~Semaphore()
 {
     delete queue;
+    delete[] name;
 }
 
 //----------------------------------------------------------------------
@@ -101,9 +103,12 @@ Semaphore::V()
 // Note -- without a correct implementation of Condition::Wait(), 
 // the test case in the network assignment won't work!
 Lock::Lock(char* debugName) {
-    name = debugName;
+    name = new char[strlen(debugName) + 1];
+    strcpy(name, debugName);
 }
-Lock::~Lock() {}
+Lock::~Lock() {
+    delete[] name;
+}
 void Lock::Acquire() {}
 void Lock::Release() {}
 

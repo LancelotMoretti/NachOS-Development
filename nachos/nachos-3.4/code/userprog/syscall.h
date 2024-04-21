@@ -181,6 +181,9 @@ void Sleep();
 
 int CreateSemaphore(char* name, int semval);
 
+int Up(char* name);
+int Down(char* name);
+
 int ReadFileFormat(int* arr, OpenFileId id);
 
 #endif /* IN_ASM */

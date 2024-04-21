@@ -23,12 +23,16 @@ PCB::PCB(int id)
 
 PCB::~PCB()
 {
+	printf("Ok1\n");
 	if(joinsem != NULL)
 		delete joinsem;
+	printf("Ok2\n");
 	if(exitsem != NULL)
 		delete exitsem;
+	printf("Ok3\n");
 	if(mutex != NULL)
 		delete mutex;
+	printf("Ok4\n");
 }
 
 //------------------------------------------------------------------

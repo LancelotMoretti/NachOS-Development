@@ -209,13 +209,21 @@ Cleanup()
 #endif
 #endif
     
+    printf("Ok1\n");
     delete timer;
+    printf("Ok2\n");
     delete scheduler;
+    printf("Ok3\n");
     delete interrupt;
+    printf("Ok4\n");
     delete processTab;
+    printf("Ok5\n");
     delete semaphoreTable;
+    printf("Ok6\n");
     delete gPhysPageBitMap;
+    printf("Ok7\n");
     delete stats;
+    printf("Ok8\n");
     
     Exit(0);
 }

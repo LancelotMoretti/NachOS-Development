@@ -21,13 +21,19 @@ PTable::PTable(int size)
 PTable::~PTable()
 {
 	int i=0;
+	printf("\nDestructor PTable\n");
 	if(bm!=NULL)
 		delete bm;
 	if(bmsem!=NULL)
 		delete bmsem;
-	for(i=0; i<MAXPROCESS; i++)
-		if(pcb[i]!=NULL)
+	for(i=0; i<MAXPROCESS; i++) {
+		printf("\nDestructor PCB[%d]\n",i);
+		printf("\npcb[%d]=%d\n",i,pcb[i]);
+		if(pcb[i]!=NULL) {
+			printf("\npcb[%d]=%d\n",i,pcb[i]);
 			delete pcb[i];
+		}
+	}
 }
 
 //--------------------------------------------------------------------
@@ -197,6 +203,14 @@ STable::~STable()
 
 int STable::Create(char* name, int init)
 {
+	for (int i = 0; i < MAX_SEMAPHORES; i++)
+	{
+		if (semTab[i] != NULL && !strcmp(semTab[i]->getName(), name))
+		{
+			printf("\nLoi: Semaphore da ton tai !!!\n");
+			return -1;
+		}
+	}
 	int ID= GetFreeSlot();
 	if(ID==-1)
 	{

@@ -35,7 +35,8 @@
 
 Thread::Thread(char* threadName)
 {
-    name = threadName;
+    name = new char[strlen(threadName) + 1];
+    strcpy(name, threadName);
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
@@ -47,7 +48,8 @@ Thread::Thread(char* threadName)
 
 Thread::Thread(char* threadName, int id)
 {
-    name = threadName;
+    name = new char[strlen(threadName) + 1];
+    strcpy(name, threadName);
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
@@ -76,6 +78,7 @@ Thread::~Thread()
     ASSERT(this != currentThread);
     if (stack != NULL)
 	DeallocBoundedArray((char *) stack, StackSize * sizeof(int));
+    delete [] name;
 }
 
 //----------------------------------------------------------------------
