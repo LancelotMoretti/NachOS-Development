@@ -4,6 +4,10 @@ int main() {
     char* buffer = "Temporary buffer";
     int totalLen = 0, curLen = 0, i = 0, curNum = 0;
     int isRun = 1; // Thay thế cho biến bool
+    int time = 0;
+    int time1 = 0;
+    int time2 = 0;
+    int time3 = 0;
     OpenFileId testFile = Open("input.txt", 1);
 
     if (testFile == -1) {
