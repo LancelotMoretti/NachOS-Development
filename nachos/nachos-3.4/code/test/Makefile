@@ -35,7 +35,7 @@ CPP = gcc -E
 INCDIR =-I../userprog -I../threads
 CFLAGS = -G 0 -c $(INCDIR)
 
-all: halt shell matmult sort createfile help quicksort mergesort ascii Ping Pong PingPong readformat
+all: halt shell matmult sort createfile help quicksort mergesort ascii Ping Pong PingPong
 
 start.o: start.s ../userprog/syscall.h
 	$(CPP) $(CPPFLAGS) start.c > strt.s
@@ -113,12 +113,6 @@ PingPong.o: PingPong.c
 PingPong: PingPong.o start.o
 	$(LD) $(LDFLAGS) start.o PingPong.o -o PingPong.coff
 	../bin/coff2noff PingPong.coff PingPong
-
-readformat.o: readformat.c
-	$(CC) $(CFLAGS) -c readformat.c
-readformat: readformat.o start.o
-	$(LD) $(LDFLAGS) start.o readformat.o -o readformat.coff
-	../bin/coff2noff readformat.coff readformat
 # 
 # test.o: test.c
 # 	$(CC) $(CFLAGS) -c test.c

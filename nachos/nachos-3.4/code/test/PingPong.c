@@ -12,6 +12,8 @@ int main() {
     
     Join(ping);
     Join(pong);
+
+    PrintString("\n");
     
     Halt();
 }

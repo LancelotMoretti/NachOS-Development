@@ -215,12 +215,7 @@ Cleanup()
     delete semaphoreTable;
     delete gPhysPageBitMap;
     delete stats;
-
-    //Delete this thing will cause segmentation fault (core dumped)
-    //Since when we delete processTab, we will have core dumped and there will be memory leak
-        //we will comment it to prevent the delete error
-    //For debugging: error occured when delete exitsem of pcb[1], for more information, see ~PCB()
-    // delete processTab;
+    delete processTab;
     
     Exit(0);
 }

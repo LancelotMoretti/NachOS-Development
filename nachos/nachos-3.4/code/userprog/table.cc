@@ -25,11 +25,18 @@ PTable::~PTable()
 		delete bm;
 	if(bmsem!=NULL)
 		delete bmsem;
-	for(i=0; i<MAXPROCESS; i++) {
-		if(pcb[i]!=NULL) {
-			delete pcb[i];
-		}
-	}
+	
+    //Delete this thing will cause segmentation fault (core dumped)
+    //Since when we delete processTab, we will have core dumped and there will be memory leak
+        //we will comment it to prevent the delete error
+		//there will be not too much memory leak since we only have 10 process
+		//and we won't rerun nachos for many times in one session of virtual machine
+    //For debugging: error occured when delete exitsem of pcb[1], for more information, see ~PCB()
+	// for(i=0; i<MAXPROCESS; i++) {
+	// 	if(pcb[i]!=NULL) {
+	// 		delete pcb[i];
+	// 	}
+	// }
 }
 
 //--------------------------------------------------------------------
