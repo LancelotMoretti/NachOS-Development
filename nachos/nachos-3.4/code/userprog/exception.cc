@@ -911,6 +911,69 @@ ExceptionHandler(ExceptionType which)
                     break;
                 }
 
+                case SC_WriteInt2File:
+                {
+                    DEBUG('a', "\n SC_Write call ...");
+                    DEBUG('a', "\n Reading virtual address of filename");
+                    int virtAddr = machine->ReadRegister(4); // Lấy địa chỉ lưu bộ đệm
+                    DEBUG ('a', "\n Reading file ID.");
+                    int fID = machine->ReadRegister(5); // Lấy tham số id của file
+
+                    if (fID == 1) {
+                        char *buffer = User2System(virtAddr, MaxString); // chuyển dữ liệu bộ đệm từ User space sang Kernel space
+                        int index = 0, count = 0;
+                        while (buffer[index] != '\0' && index < MaxString) {
+                            count += gSynchConsole->Write(buffer + index++, 1); // In một kí tự ở vị trí thứ i trong chuỗi
+                        }
+                        machine->WriteRegister(2, count); // Ghi số kí tự in được vào thanh ghi r2
+                        delete []buffer;
+                        break;
+                    }
+
+                    if (fID < 2 || fID > 9) {
+                        printf("\n Invalid file id");
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
+
+                    OpenFile* file = fileSystem->openFileList[fID]; // Tạo biến con trỏ đọc file
+                    if (file == NULL) {
+                        printf("\n Error writing file with id %d", fID);
+                        DEBUG('a', "\n Error writing file with id %d", fID);
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
+
+                    if (file->GetType() == 1) { // File chỉ đọc 
+                        printf("\n This is a read-only file, can not write!");
+                        DEBUG('a', "\n This is a read-only file, can not write!");
+                        machine->WriteRegister(2, -1);
+                        break;
+                    }
+
+                    int temp = virtAddr;
+                    int len = 0;
+                    if (temp == 0) len = 1;
+                    else {
+                        while (temp > 0) {
+                            len = len + 1;
+                            temp = temp / 10;
+                        }
+                    }
+
+                    char *buffer = new char[len + 1];
+                    for (int i = 0; i < len; i++) {
+                        buffer[len - i - 1] = (char)(virtAddr % 10 + 48);
+                        virtAddr = virtAddr / 10;
+                    }
+                    int size = file->Write(buffer, len); // Ghi buffer vào file
+
+                    if (len != size) machine->WriteRegister(2, -2);
+                    else machine->WriteRegister(2, size);
+                    delete[] buffer;
+                    break;
+                }
+
                 default:
                     printf("\n Unexpected user mode exception (%d %d) \n", which, type);
                     interrupt->Halt();

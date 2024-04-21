@@ -250,6 +250,14 @@ ReadFileFormat:
 	j	$31
 	.end ReadFileFormat
 
+	.globl WriteInt2File
+	.ent	WriteInt2File
+WriteInt2File:
+	addiu $2,$0,SC_WriteInt2File
+	syscall
+	j	$31
+	.end WriteInt2File
+
 /* dummy function to keep gcc happy */
         .globl  __main
         .ent    __main

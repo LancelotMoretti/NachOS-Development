@@ -53,6 +53,7 @@
 
 #define SC_CreateSemaphore  25
 #define SC_ReadFileFormat   26
+#define SC_WriteInt2File    27
 
 #define byte unsigned char
 
@@ -185,6 +186,8 @@ int Up(char* name);
 int Down(char* name);
 
 int ReadFileFormat(int* arr, OpenFileId id);
+
+int WriteInt2File(int num, OpenFileId id);
 
 #endif /* IN_ASM */
 
