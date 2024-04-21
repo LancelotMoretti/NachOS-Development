@@ -19,7 +19,7 @@ This is our project for the course CSC10007 - Operating System. The project is t
 
 ## Documentation
 
-- Read the [report](./Report_OS-2.pdf) for more details about the project.
+- Read the [report2](./Report_OS-2.pdf) and [report3](./Report_OS-3.pdf) for more details about the project.
 - Click [here](https://youtu.be/uKtCYqtZlGE) to watch the demo video.
 
 ## Acknowledgements
